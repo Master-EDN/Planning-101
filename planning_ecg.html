@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ECG · EDN 2026</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;500;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#f2efe9;color:#1a1a1a;font-size:13px;min-height:100vh}
+
+.hdr{background:linear-gradient(135deg,#6b2640 0%,#a83d5e 100%);padding:16px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.hdr-back{font-size:10px;color:rgba(255,255,255,.4);text-decoration:none;display:block;margin-bottom:4px;transition:.15s}
+.hdr-back:hover{color:rgba(255,255,255,.7)}
+.hdr-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:white;line-height:1}
+.hdr-sub{font-size:10px;color:rgba(255,255,255,.45);margin-top:3px}
+.hdr-stats{display:flex;gap:16px;margin-left:auto}
+.hstat{text-align:right}
+.hstat-val{font-size:16px;font-weight:700;color:white;line-height:1}
+.hstat-lbl{font-size:8px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+.hbtn{padding:4px 10px;border-radius:7px;border:1.5px solid rgba(255,255,255,.25);background:transparent;color:white;font-size:9px;font-weight:600;cursor:pointer;transition:.15s;white-space:nowrap}
+.hbtn:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.5)}
+
+.content{max-width:1100px;margin:0 auto;padding:20px 24px 80px}
+.section-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:#6b2640;margin:20px 0 12px;display:flex;align-items:center;gap:8px}
+.week-block{margin-bottom:16px}
+.week-title{font-size:10px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid #e8e4de}
+.days-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:7px}
+@media(max-width:700px){.days-grid{grid-template-columns:repeat(4,1fr)}}
+
+.day-card{background:white;border-radius:11px;padding:10px 8px;text-align:center;cursor:pointer;transition:.15s;box-shadow:0 1px 3px rgba(0,0,0,.05),0 0 0 1px rgba(0,0,0,.04);position:relative}
+.day-card:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.08)}
+.day-card.lundi{border-top:3px solid #a83d5e}
+.day-card.done{background:#f3f7f0}
+.day-card.today{box-shadow:0 0 0 2px #a83d5e}
+.day-card.past:not(.done){opacity:.55}
+.day-name{font-size:9px;font-weight:700;color:#999}
+.day-date{font-size:9px;color:#bbb;margin-top:1px}
+.badge-lundi{display:inline-block;font-size:7px;font-weight:700;background:#f3e8e0;color:#a83d5e;border-radius:4px;padding:1px 5px;margin-top:5px;letter-spacing:.4px}
+.badge-ratt{display:inline-block;font-size:7px;font-weight:700;background:#f0ece6;color:#999;border-radius:4px;padding:1px 5px;margin-top:5px;letter-spacing:.4px}
+.day-ecg{font-size:13px;font-weight:700;color:#6b2640;margin:5px 0}
+.day-card input[type=checkbox]{width:15px;height:15px;accent-color:#a83d5e;cursor:pointer}
+
+.videos-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.video-card{background:white;border-radius:14px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.video-title{font-size:12px;font-weight:600;color:#1a1a1a;margin-bottom:3px}
+.video-dur{font-size:10px;color:#999;margin-bottom:10px}
+.prog-label{display:flex;justify-content:space-between;font-size:9px;color:#999;margin-bottom:4px}
+.prog-outer{height:6px;background:#f0ece6;border-radius:4px;overflow:hidden;margin-bottom:12px}
+.prog-inner{height:100%;border-radius:4px;transition:.3s}
+.slices-wrap{display:flex;flex-wrap:wrap;gap:5px}
+.slice{display:flex;align-items:center;gap:4px;padding:3px 8px;border-radius:8px;border:1px solid #e8e4de;font-size:9px;cursor:pointer;transition:.15s}
+.slice:hover{border-color:#a83d5e}
+.slice.done-slice{background:#f3f7f0;border-color:#a0c89a;color:#3a7a3a}
+.slice input{width:11px;height:11px;accent-color:#a83d5e;cursor:pointer}
+
+.save-bar{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #e8e4de;padding:8px 24px;display:flex;align-items:center;gap:8px;z-index:100;box-shadow:0 -2px 8px rgba(0,0,0,.06)}
+.save-bar span{font-size:10px;color:#aaa;flex:1}
+.btn{border:none;border-radius:8px;padding:6px 13px;font-size:10px;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s}
+.btn.rose{background:#a83d5e;color:white}
+.btn.rose:hover{background:#b85070}
+.btn-s{background:#f0ece6;color:#666}
+.btn-s:hover{background:#e8e4de}
+.toast{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);background:#6b2640;color:white;padding:7px 16px;border-radius:18px;font-size:10px;opacity:0;transition:.3s;z-index:2000;pointer-events:none}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div>
+    <a href="index.html" class="hdr-back">‹ Tableau de bord</a>
+    <div class="hdr-title">🫀 ECG</div>
+    <div class="hdr-sub">Rattrapage quotidien · puis nouveau chaque lundi</div>
+  </div>
+  <div class="hdr-stats">
+    <div class="hstat"><div class="hstat-val" id="st-new">—</div><div class="hstat-lbl">Nouveaux</div></div>
+    <div class="hstat"><div class="hstat-val" id="st-ratt">—</div><div class="hstat-lbl">Rattrapages</div></div>
+    <div class="hstat"><div class="hstat-val" id="st-glob">—</div><div class="hstat-lbl">Avancement</div></div>
+    <button class="hbtn" onclick="importData()">⬆ Importer</button>
+    <button class="hbtn" onclick="exportData('planning_ecg')">⬇ Exporter</button>
+    <button class="hbtn" onclick="syncToSheets('planning_ecg')">☁ Sync Sheets</button>
+  </div>
+</div>
+
+<div class="content">
+  <div class="section-title">📅 Calendrier de révision</div>
+  <div id="weeksWrap"></div>
+
+  <div class="section-title">🎬 Vidéos de référence</div>
+  <div class="videos-grid" id="videosGrid"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function sv(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+function ld(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function addDays(d,n){const r=new Date(d);r.setDate(r.getDate()+n);return r}
+function fmtDate(d){return d.toLocaleDateString('fr-FR',{day:'numeric',month:'short'})}
+
+const TODAY = new Date(2026,5,15);
+const DAY_NAMES = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+
+const schedule = [];
+let rattrapNum = 1;
+let newEcgNum = 30;
+
+for(let week=0; week<5; week++){
+  const lundi = addDays(TODAY, week*7);
+  for(let dow=0; dow<7; dow++){
+    const day = addDays(lundi, dow);
+    if(dow===0){
+      schedule.push({date:new Date(day), ecgNum:newEcgNum, type:'new'});
+      newEcgNum++;
+    } else {
+      if(rattrapNum<=29){
+        schedule.push({date:new Date(day), ecgNum:rattrapNum, type:'ratt'});
+        rattrapNum++;
+      }
+    }
+  }
+}
+
+const weeks = [];
+for(let i=0;i<schedule.length;i+=7){
+  weeks.push(schedule.slice(i,i+7));
+}
+
+const wrap = document.getElementById("weeksWrap");
+
+weeks.forEach((week, wi)=>{
+  const firstDay = week[0].date;
+  const lastDay = week[week.length-1].date;
+  const wdiv = document.createElement("div");
+  wdiv.className = "week-block";
+  wdiv.innerHTML = `<div class="week-title">Semaine ${wi+1} — ${fmtDate(firstDay)} au ${fmtDate(lastDay)}</div><div class="days-grid" id="wg${wi}"></div>`;
+  wrap.appendChild(wdiv);
+
+  const dgrid = document.getElementById("wg"+wi);
+  week.forEach(item=>{
+    const key = "ecg_"+item.type+"_"+item.ecgNum;
+    const checked = ld(key)==="1";
+    const isToday = item.date.toDateString()===TODAY.toDateString();
+    const isPast = item.date < TODAY;
+    const dow = item.date.getDay();
+    const isLundi = dow===1;
+
+    const dc = document.createElement("div");
+    dc.className = "day-card"+(isLundi?" lundi":"")+(checked?" done":"")+(isToday?" today":"")+(isPast&&!isToday?" past":"");
+
+    const badge = isLundi
+      ? "<span class='badge-lundi'>NOUVEAU</span>"
+      : "<span class='badge-ratt'>RATTRAPAGE</span>";
+
+    dc.innerHTML =
+      "<div class='day-name'>"+DAY_NAMES[dow]+"</div>"+
+      "<div class='day-date'>"+fmtDate(item.date)+"</div>"+
+      badge+
+      "<div class='day-ecg'>ECG #"+item.ecgNum+"</div>"+
+      "<input type='checkbox' "+(checked?"checked":"")+" data-key='"+key+"'>";
+
+    dc.querySelector("input").addEventListener("change",function(e){
+      e.stopPropagation();
+      sv(this.dataset.key, this.checked?"1":"0");
+      dc.classList.toggle("done", this.checked);
+      updateStats();
+    });
+    dc.addEventListener("click",function(e){
+      if(e.target.tagName!=="INPUT"){
+        const cb = this.querySelector("input");
+        cb.checked=!cb.checked;
+        sv(cb.dataset.key, cb.checked?"1":"0");
+        this.classList.toggle("done", cb.checked);
+        updateStats();
+      }
+    });
+    dgrid.appendChild(dc);
+  });
+});
+
+const videos = [
+  {key:"v1",title:"231 – ECG normal",totalMin:59,color:"#a83d5e"},
+  {key:"v2",title:"231 – Troubles de la conduction",totalMin:109,color:"#8a4a64"},
+  {key:"v3",title:"231 – Troubles du rythme",totalMin:82,color:"#6b3a52"},
+];
+const vgrid = document.getElementById("videosGrid");
+videos.forEach(v=>{
+  const slices = Math.ceil(v.totalMin/10);
+  const vc = document.createElement("div");
+  vc.className = "video-card";
+  let slicesHTML="";
+  for(let s=0;s<slices;s++){
+    const start=s*10, end=Math.min((s+1)*10,v.totalMin);
+    const sk="vid_"+v.key+"_s"+s;
+    const sd=ld(sk)==="1";
+    slicesHTML+=`<label class='slice${sd?" done-slice":""}'>
+      <input type='checkbox' ${sd?"checked":""} data-key='${sk}' data-v='${v.key}'>
+      <span>${start}–${end}m</span>
+    </label>`;
+  }
+  vc.innerHTML=`
+    <div class='video-title'>${v.title}</div>
+    <div class='video-dur'>${v.totalMin} min · ${slices} tranches de 10 min</div>
+    <div class='prog-label'><span class='dm' id='dm_${v.key}'>0 min (0%)</span><span>${v.totalMin} min</span></div>
+    <div class='prog-outer'><div class='prog-inner' id='pi_${v.key}' style='width:0%;background:${v.color}'></div></div>
+    <div class='slices-wrap'>${slicesHTML}</div>`;
+  vgrid.appendChild(vc);
+  vc.querySelectorAll("input").forEach(cb=>{
+    cb.addEventListener("change",function(){
+      sv(this.dataset.key,this.checked?"1":"0");
+      this.closest(".slice").classList.toggle("done-slice",this.checked);
+      updateVideoProgress(v.key,slices,v.totalMin);
+      updateStats();
+    });
+  });
+  updateVideoProgress(v.key,slices,v.totalMin);
+});
+
+function updateVideoProgress(vk,slices,total){
+  let done=0;
+  for(let s=0;s<slices;s++) if(ld("vid_"+vk+"_s"+s)==="1") done++;
+  const dm=Math.min(done*10,total);
+  const pct=Math.round(dm/total*100);
+  const pi=document.getElementById("pi_"+vk);
+  const dmel=document.getElementById("dm_"+vk);
+  if(pi)pi.style.width=pct+"%";
+  if(dmel)dmel.textContent=dm+" min ("+pct+"%)";
+}
+
+function updateStats(){
+  const newItems=schedule.filter(s=>s.type==="new");
+  const newDone=newItems.filter(s=>ld("ecg_new_"+s.ecgNum)==="1").length;
+  document.getElementById("st-new").textContent=newDone+"/"+newItems.length;
+  const rattItems=schedule.filter(s=>s.type==="ratt");
+  const rattDone=rattItems.filter(s=>ld("ecg_ratt_"+s.ecgNum)==="1").length;
+  document.getElementById("st-ratt").textContent=rattDone+"/29";
+  videos.forEach((v,i)=>{
+    const sl=Math.ceil(v.totalMin/10);
+    let d=0; for(let s=0;s<sl;s++) if(ld("vid_"+v.key+"_s"+s)==="1") d++;
+    const pct=Math.round(Math.min(d*10,v.totalMin)/v.totalMin*100);
+  });
+  const totalEcg=newItems.length+29;
+  const doneEcg=newDone+rattDone;
+  const totalSlices=videos.reduce((a,v)=>a+Math.ceil(v.totalMin/10),0);
+  let doneSlices=0;
+  videos.forEach(v=>{const sl=Math.ceil(v.totalMin/10);for(let s=0;s<sl;s++) if(ld("vid_"+v.key+"_s"+s)==="1") doneSlices++;});
+  const glob=Math.round((doneEcg+doneSlices)/(totalEcg+totalSlices)*100);
+  document.getElementById("st-glob").textContent=glob+"%";
+}
+updateStats();
+
+function toast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},2200);
+}
+function exportData(source){
+  const data={};
+  for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);data[k]=localStorage.getItem(k);}
+  const b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(b);
+  a.download=source+'_'+new Date().toISOString().slice(0,10)+'.json'; a.click();
+  toast('Exporté ✅');
+}
+function importData(){
+  const inp=document.createElement('input'); inp.type='file'; inp.accept='.json';
+  inp.onchange=function(e){
+    const r=new FileReader();
+    r.onload=function(ev){
+      try{const data=JSON.parse(ev.target.result);
+        Object.keys(data).forEach(k=>localStorage.setItem(k,data[k]));
+        toast('Importé ✅'); setTimeout(()=>location.reload(),1000);
+      }catch(err){toast('Fichier invalide ❌');}
+    };
+    r.readAsText(e.target.files[0]);
+  };
+  inp.click();
+}
+const GSHEET_URL = "https://script.google.com/macros/s/AKfycbwv3meUEQ690HbhavV0ZQBwoTI5xU7F0R6NzA9cYUM3oRVZQ-1MFi99VKCuZmskO_Pe/exec";
+async function syncToSheets(source) {
+  const data = {};
+  for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);data[k]=localStorage.getItem(k);}
+  toast('☁ Synchronisation...');
+  try{
+    const resp = await fetch(GSHEET_URL, {method:'POST', body: JSON.stringify({source:source, payload:data})});
+    const j = await resp.json();
+    toast(j.status==='ok' ? 'Synchronisé ✅' : 'Erreur sync ❌');
+  }catch(e){ toast('Erreur réseau ❌'); }
+}
+</script>
+</body>
+</html>
