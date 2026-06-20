@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fiche · Conseil génétique & maladies génétiques</title>
+<style>
+  :root{
+    --bg:#FAFAF7; --card:#FFFFFF; --ink:#1C1B19; --ink-soft:#52504B; --ink-faint:#8A877F;
+    --line:#EAE7DF; --line-strong:#DDD9CF;
+    --cg:#5B5BD6; --cg-bg:#EEEEFB; --t21:#C77A12; --t21-bg:#FBF1DF;
+    --muco:#0E8C8C; --muco-bg:#E1F3F2; --xf:#9333A8; --xf-bg:#F4E9F7;
+    --warn:#C0392B; --warn-bg:#FBE9E7; --warn-line:#F1B9B0;
+    --mnemo:#B7820B; --mnemo-bg:#FFF8E1; --mnemo-line:#F0DFA0;
+    --accent:var(--cg); --accent-bg:var(--cg-bg);
+    --radius:16px; --shadow:0 1px 2px rgba(30,28,24,.04), 0 8px 24px rgba(30,28,24,.05);
+  }
+  [data-theme="dark"]{
+    --bg:#15140F; --card:#201F1A; --ink:#ECEAE3; --ink-soft:#B7B4AB; --ink-faint:#827F77;
+    --line:#322F28; --line-strong:#403D34;
+    --cg:#9D9DF2; --cg-bg:#26264A; --t21:#E2A748; --t21-bg:#3A2E16;
+    --muco:#4FC4C0; --muco-bg:#11332F; --xf:#CB7FDD; --xf-bg:#341A3C;
+    --warn:#F08C7E; --warn-bg:#3A1E18; --warn-line:#5C2C22;
+    --mnemo:#E2C158; --mnemo-bg:#332B12; --mnemo-line:#544818;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;scroll-padding-top:118px;}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.55;-webkit-font-smoothing:antialiased;font-size:15px;transition:background .25s,color .25s;}
+
+  /* ---------- TOPBAR ---------- */
+  .topbar{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 82%,transparent);
+    backdrop-filter:saturate(180%) blur(18px);border-bottom:1px solid var(--line);}
+  .topbar-inner{max-width:1060px;margin:0 auto;padding:9px 22px;display:flex;flex-direction:column;gap:8px;}
+  .row1{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  .brand{font-weight:700;letter-spacing:-.02em;font-size:15px;white-space:nowrap;}
+  .brand span{color:var(--ink-faint);font-weight:500;}
+  .nav{display:flex;gap:6px;flex-wrap:wrap;flex:1;}
+  .nav a{text-decoration:none;font-size:13px;font-weight:600;color:var(--ink-soft);padding:5px 11px;
+    border-radius:999px;border:1px solid transparent;transition:.15s;display:flex;align-items:center;gap:6px;}
+  .nav a .dot{width:8px;height:8px;border-radius:50%;}
+  .nav a:hover{background:var(--card);border-color:var(--line);}
+  .d1{background:var(--cg);} .d2{background:var(--t21);} .d3{background:var(--muco);} .d4{background:var(--xf);}
+
+  .row2{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .tool{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:600;color:var(--ink-soft);
+    cursor:pointer;user-select:none;white-space:nowrap;background:var(--card);border:1px solid var(--line);
+    padding:5px 10px;border-radius:9px;transition:.15s;}
+  .tool:hover{border-color:var(--line-strong);}
+  .tool.active{color:#fff;background:var(--cg);border-color:var(--cg);}
+  .switch{width:34px;height:20px;border-radius:999px;background:var(--line-strong);position:relative;transition:.2s;flex:none;}
+  .switch::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;
+    background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:.2s;}
+  body.revision .rev .switch{background:var(--cg);} body.revision .rev .switch::after{transform:translateX(14px);}
+  body.editmode .edit .switch{background:var(--cg);} body.editmode .edit .switch::after{transform:translateX(14px);}
+
+  .search{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);
+    border-radius:9px;padding:3px 8px;}
+  .search input{border:none;background:transparent;color:var(--ink);font-size:13px;outline:none;width:130px;font-family:inherit;}
+  .search .cnt{font-size:11px;color:var(--ink-faint);min-width:38px;text-align:right;}
+  .search button{border:none;background:transparent;color:var(--ink-soft);cursor:pointer;font-size:13px;padding:2px 4px;border-radius:5px;}
+  .search button:hover{background:var(--accent-bg);}
+
+  /* ---------- LAYOUT ---------- */
+  .wrap{max-width:1060px;margin:0 auto;padding:0 22px 90px;}
+  .hero{padding:40px 0 22px;}
+  .kicker{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--cg);}
+  .hero h1{font-size:32px;line-height:1.1;letter-spacing:-.03em;margin:.32em 0 .25em;font-weight:800;}
+  .hero p{color:var(--ink-soft);max-width:650px;margin:0;font-size:15px;}
+  .hint{margin-top:14px;font-size:12.5px;color:var(--ink-faint);display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+  .hint b{color:var(--cg);font-weight:700;}
+  .notes-box{margin-top:18px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:5px 7px;box-shadow:var(--shadow);}
+  .notes-area{width:100%;border:none;background:transparent;color:var(--ink);font-family:inherit;font-size:14px;line-height:1.55;resize:vertical;min-height:56px;outline:none;padding:8px 10px;}
+  .notes-area::placeholder{color:var(--ink-faint);}
+
+  section{scroll-margin-top:118px;padding-top:32px;}
+  .sec-head{display:flex;align-items:center;gap:13px;margin-bottom:6px;}
+  .sec-num{width:38px;height:38px;border-radius:11px;flex:none;display:flex;align-items:center;justify-content:center;
+    font-weight:800;font-size:16px;color:#fff;background:var(--accent);box-shadow:var(--shadow);}
+  .sec-head h2{font-size:24px;letter-spacing:-.02em;margin:0;font-weight:800;}
+  .sec-sub{color:var(--ink-faint);font-size:13px;margin:0 0 18px 51px;font-weight:500;}
+  #s1{--accent:var(--cg);--accent-bg:var(--cg-bg);}
+  #s2{--accent:var(--t21);--accent-bg:var(--t21-bg);}
+  #s3{--accent:var(--muco);--accent-bg:var(--muco-bg);}
+  #s4{--accent:var(--xf);--accent-bg:var(--xf-bg);}
+
+  .grid{display:grid;gap:16px;} .g2{grid-template-columns:repeat(2,1fr);} .g3{grid-template-columns:repeat(3,1fr);}
+  @media(max-width:780px){.g2,.g3{grid-template-columns:1fr;}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow);}
+  .card.span{grid-column:1/-1;}
+  .card h3{font-size:13.5px;margin:0 0 12px;font-weight:700;letter-spacing:-.01em;display:flex;align-items:center;gap:8px;color:var(--ink);}
+  .card h3::before{content:"";width:6px;height:16px;border-radius:3px;background:var(--accent);flex:none;}
+  .card h4{font-size:12.5px;font-weight:700;color:var(--accent);margin:14px 0 7px;text-transform:uppercase;letter-spacing:.04em;}
+  .card h4:first-child{margin-top:0;}
+  ul{margin:0;padding-left:18px;} li{margin:4px 0;color:var(--ink-soft);}
+  li b,p b{color:var(--ink);font-weight:600;} p{margin:6px 0;color:var(--ink-soft);}
+
+  /* ---------- KEY PILLS (active recall) ---------- */
+  .cle{display:inline-flex;align-items:center;font-weight:700;color:var(--accent);background:var(--accent-bg);
+    border-radius:7px;padding:1px 7px;font-size:.93em;white-space:nowrap;cursor:default;transition:.15s;}
+  .cle-user{box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--accent) 45%,transparent);}
+  body.revision .cle{color:transparent;background:var(--line-strong);border-radius:7px;cursor:pointer;position:relative;min-width:34px;justify-content:center;}
+  body.revision .cle::after{content:"?";color:var(--ink-faint);font-weight:800;position:absolute;}
+  body.revision .cle.show{color:var(--accent);background:var(--accent-bg);}
+  body.revision .cle.show::after{content:"";}
+  body.editmode .cle-user{cursor:pointer;outline:2px dashed var(--accent);outline-offset:1px;color:var(--accent)!important;background:var(--accent-bg)!important;}
+  body.editmode .cle-user::after{content:""!important;}
+
+  /* ---------- CALLOUTS ---------- */
+  .callout{position:relative;border-radius:12px;padding:13px 15px;margin:14px 0 2px;font-size:13.5px;background:var(--accent-bg);
+    border:1px solid color-mix(in srgb,var(--accent) 22%,transparent);}
+  .callout .tag{font-weight:800;color:var(--accent);font-size:11px;letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:4px;}
+  .callout p{color:var(--ink);margin:3px 0;}
+  .callout.warn{background:var(--warn-bg);border-color:var(--warn-line);} .callout.warn .tag{color:var(--warn);} .callout.warn b{color:var(--warn);}
+  .callout.mnemo{background:var(--mnemo-bg);border-color:var(--mnemo-line);} .callout.mnemo .tag{color:var(--mnemo);}
+
+  .co-ctrl{position:absolute;top:7px;right:8px;display:none;gap:4px;}
+  body.editmode .co-ctrl{display:flex;}
+  .co-ctrl button{border:1px solid var(--line);background:var(--card);color:var(--ink-soft);width:24px;height:24px;border-radius:7px;cursor:pointer;font-size:12px;line-height:1;padding:0;}
+  .co-ctrl button:hover{border-color:var(--line-strong);}
+  .callout.editing{outline:2px solid var(--accent);outline-offset:1px;}
+  .callout [contenteditable="true"]{outline:none;}
+  .callout.editing .cle{color:var(--accent)!important;background:var(--accent-bg)!important;}
+  .callout.editing .cle::after{content:""!important;}
+  .addco{display:none;gap:8px;margin-top:16px;flex-wrap:wrap;}
+  body.editmode .addco{display:flex;}
+  .addco button{border:1px dashed var(--line-strong);background:transparent;color:var(--ink-soft);font-weight:600;font-size:12.5px;padding:6px 12px;border-radius:9px;cursor:pointer;}
+  .addco button:hover{border-color:var(--accent);color:var(--accent);}
+
+  /* ---------- TABLES ---------- */
+  .tbl{width:100%;border-collapse:collapse;font-size:13px;margin-top:4px;}
+  .tbl th{text-align:left;font-weight:700;color:#fff;background:var(--accent);padding:8px 11px;font-size:11.5px;text-transform:uppercase;letter-spacing:.03em;}
+  .tbl th:first-child{border-radius:9px 0 0 0;} .tbl th:last-child{border-radius:0 9px 0 0;}
+  .tbl td{padding:8px 11px;border-bottom:1px solid var(--line);color:var(--ink-soft);vertical-align:top;}
+  .tbl tr:last-child td{border-bottom:none;} .tbl td b{color:var(--ink);} .tbl tbody tr:hover{background:var(--accent-bg);}
+
+  .steps{counter-reset:st;display:grid;gap:10px;} .step{display:flex;gap:12px;align-items:flex-start;}
+  .step .n{counter-increment:st;flex:none;width:26px;height:26px;border-radius:8px;background:var(--accent);color:#fff;
+    font-weight:800;font-size:12.5px;display:flex;align-items:center;justify-content:center;margin-top:1px;}
+  .step .n::before{content:counter(st);} .step .b{font-size:13.5px;} .step .b b{color:var(--ink);}
+  .chip{display:inline-block;font-size:11px;font-weight:800;padding:2px 8px;border-radius:6px;letter-spacing:.02em;}
+  .chip.h{background:#E3EEFB;color:#1F5FA8;} .chip.f{background:#FBE6F0;color:#B23472;}
+  [data-theme="dark"] .chip.h{background:#1c3148;color:#9cc4ee;} [data-theme="dark"] .chip.f{background:#3d1f2e;color:#eaa3c6;}
+
+  mark.srch{background:#FFE066;color:#1C1B19;border-radius:3px;padding:0 1px;}
+  mark.srch.cur{background:#FF9F1C;}
+
+  li.starred::before{content:"⭐ ";}
+  tbody tr.starred td:first-child::before{content:"⭐ ";}
+  body.starmode li,body.starmode tbody tr{cursor:pointer;}
+  body.starmode li:hover{background:var(--t21-bg);border-radius:6px;}
+  body.starmode .star .switch{background:var(--t21);} body.starmode .star .switch::after{transform:translateX(14px);}
+
+  body.filterstar #fiche li:not(.starred):not(:has(.starred)),
+  body.filterstar #fiche tbody tr:not(.starred),
+  body.filterstar #fiche ul:not(:has(.starred)),
+  body.filterstar #fiche table:not(:has(.starred)),
+  body.filterstar #fiche .callout,
+  body.filterstar #fiche .card>p,
+  body.filterstar #fiche .card .grid>div:not(:has(.starred)),
+  body.filterstar #fiche .card:not(:has(.starred)),
+  body.filterstar #fiche section:not(:has(.starred)),
+  body.filterstar .module{display:none!important;}
+  body.filterstar .filter .switch{background:var(--t21);} body.filterstar .filter .switch::after{transform:translateX(14px);}
+
+  /* ---------- BOTTOM MODULES ---------- */
+  .module{margin-top:36px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px 22px 24px;box-shadow:var(--shadow);}
+  .module-head{display:flex;align-items:center;gap:11px;margin-bottom:4px;}
+  .module-head .ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex:none;background:var(--cg-bg);}
+  .module-head h2{font-size:20px;margin:0;letter-spacing:-.02em;font-weight:800;}
+  .module-head .sub{color:var(--ink-faint);font-size:12.5px;margin:0;}
+  .module#m-cards .ic{background:var(--t21-bg);} .module#m-carnet .ic{background:var(--warn-bg);}
+
+  /* flashcards */
+  .fc-stage{margin:18px 0 12px;min-height:160px;display:flex;align-items:center;justify-content:center;}
+  .flashcard{width:100%;max-width:540px;min-height:150px;cursor:pointer;perspective:1200px;}
+  .fc-inner{position:relative;width:100%;min-height:150px;transition:transform .5s;transform-style:preserve-3d;}
+  .flashcard.flip .fc-inner{transform:rotateY(180deg);}
+  .fc-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;padding:22px;display:flex;
+    flex-direction:column;align-items:center;justify-content:center;text-align:center;border:1.5px solid var(--line);}
+  .fc-front{background:var(--cg-bg);} .fc-back{background:var(--t21-bg);transform:rotateY(180deg);}
+  .fc-face .lbl{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:9px;}
+  .fc-face .txt{font-size:16px;font-weight:600;color:var(--ink);line-height:1.45;}
+  .fc-ctrl{display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap;}
+  .fc-ctrl button{border:1px solid var(--line);background:var(--card);color:var(--ink-soft);font-weight:600;font-size:13px;
+    padding:7px 14px;border-radius:9px;cursor:pointer;transition:.15s;}
+  .fc-ctrl button:hover{border-color:var(--line-strong);background:var(--bg);}
+  .fc-pos{font-size:12.5px;color:var(--ink-faint);min-width:54px;text-align:center;}
+  .fc-empty{color:var(--ink-faint);font-size:13.5px;text-align:center;}
+
+  /* generic add-forms */
+  .addform{margin-top:16px;border-top:1px solid var(--line);padding-top:16px;display:grid;gap:9px;}
+  .addform.two{grid-template-columns:1fr 1fr;} @media(max-width:600px){.addform.two{grid-template-columns:1fr;}}
+  input.f,textarea.f{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:10px;
+    padding:9px 11px;font-family:inherit;font-size:14px;outline:none;resize:vertical;transition:.15s;}
+  input.f:focus,textarea.f:focus{border-color:var(--accent);}
+  textarea.f{min-height:64px;}
+  .btn{border:none;border-radius:10px;padding:9px 16px;font-weight:700;font-size:13.5px;cursor:pointer;background:var(--cg);color:#fff;transition:.15s;}
+  .btn:hover{filter:brightness(1.06);} .btn.ghost{background:var(--card);color:var(--ink-soft);border:1px solid var(--line);}
+  .btn.sm{padding:6px 11px;font-size:12.5px;}
+  .formrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  .span-full{grid-column:1/-1;}
+
+  /* carnet entries */
+  .entry{border:1px solid var(--line);border-radius:13px;padding:14px 15px;margin-top:13px;background:var(--bg);}
+  .entry .meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;}
+  .entry .date{font-size:11.5px;color:var(--ink-faint);font-weight:600;}
+  .entry .body{font-size:14px;color:var(--ink);white-space:pre-wrap;line-height:1.5;}
+  .entry .imgs{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+  .entry .imgs img{max-width:160px;max-height:160px;border-radius:8px;border:1px solid var(--line);cursor:zoom-in;}
+  .del{border:none;background:transparent;color:var(--ink-faint);cursor:pointer;font-size:12px;font-weight:600;padding:3px 7px;border-radius:6px;}
+  .del:hover{background:var(--warn-bg);color:var(--warn);}
+  .thumbs{display:flex;flex-wrap:wrap;gap:8px;}
+  .thumbs .t{position:relative;}
+  .thumbs img{max-width:84px;max-height:84px;border-radius:7px;border:1px solid var(--line);}
+  .thumbs .x{position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;background:var(--warn);color:#fff;border:none;font-size:11px;cursor:pointer;line-height:1;}
+  .paste-hint{font-size:11.5px;color:var(--ink-faint);}
+
+  /* TOC panel */
+  .toc{position:fixed;top:0;right:0;height:100%;width:300px;max-width:84vw;background:var(--card);border-left:1px solid var(--line);
+    box-shadow:-12px 0 40px rgba(0,0,0,.12);z-index:60;transform:translateX(100%);transition:transform .28s;padding:18px 18px 30px;overflow-y:auto;}
+  .toc.open{transform:translateX(0);}
+  .toc h4{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-faint);margin:0 0 10px;}
+  .toc a{display:block;text-decoration:none;color:var(--ink-soft);font-size:13.5px;padding:5px 9px;border-radius:8px;}
+  .toc a:hover{background:var(--accent-bg);color:var(--ink);}
+  .toc a.sub{font-size:12.5px;padding-left:20px;color:var(--ink-faint);}
+  .toc a.head{font-weight:700;color:var(--ink);margin-top:10px;}
+  .toc .close{float:right;border:none;background:transparent;font-size:20px;color:var(--ink-faint);cursor:pointer;}
+  .scrim{position:fixed;inset:0;background:rgba(0,0,0,.28);z-index:55;opacity:0;pointer-events:none;transition:.25s;}
+  .scrim.on{opacity:1;pointer-events:auto;}
+
+  /* floating selection button */
+  #maskbtn{position:absolute;z-index:70;background:var(--cg);color:#fff;border:none;border-radius:9px;padding:7px 12px;
+    font-size:12.5px;font-weight:700;cursor:pointer;box-shadow:var(--shadow);display:none;}
+  #maskbtn::before{content:"✂️ ";}
+
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);
+    padding:11px 18px;border-radius:11px;font-size:13.5px;font-weight:600;z-index:90;opacity:0;pointer-events:none;transition:.25s;max-width:90vw;text-align:center;}
+  .toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:100;display:none;align-items:center;justify-content:center;padding:30px;cursor:zoom-out;}
+  .lightbox.on{display:flex;} .lightbox img{max-width:100%;max-height:100%;border-radius:8px;}
+
+  footer{margin-top:46px;padding-top:22px;border-top:1px solid var(--line);color:var(--ink-faint);font-size:12.5px;text-align:center;}
+  .backtop{position:fixed;right:20px;bottom:20px;z-index:40;width:42px;height:42px;border-radius:50%;background:var(--ink);
+    color:var(--bg);border:none;cursor:pointer;font-size:18px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.25s;}
+  .backtop.on{opacity:1;pointer-events:auto;}
+  .editbar{display:none;}
+  body.editmode .editbar{display:flex;}
+
+  @media print{
+    .topbar,.backtop,.hint,.toc,.scrim,#maskbtn,.toast,.addform,.fc-ctrl,.editbar,.lightbox{display:none!important;}
+    body{background:#fff;font-size:11px;} .card,.module{box-shadow:none;break-inside:avoid;} section{break-inside:avoid-page;}
+    body.revision .cle{color:var(--accent)!important;background:var(--accent-bg)!important;}
+    body.revision .cle::after{content:""!important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="row1">
+      <div class="brand">Génétique <span>· conseil & maladies</span></div>
+      <nav class="nav">
+        <a href="#s1"><span class="dot d1"></span>Conseil</a>
+        <a href="#s2"><span class="dot d2"></span>Trisomie 21</a>
+        <a href="#s3"><span class="dot d3"></span>Mucoviscidose</a>
+        <a href="#s4"><span class="dot d4"></span>X fragile</a>
+        <a href="#m-cards"><span class="dot d2"></span>Flashcards</a>
+        <a href="#m-carnet"><span class="dot" style="background:var(--warn)"></span>Carnet</a>
+      </nav>
+    </div>
+    <div class="row2">
+      <div class="tool rev" id="revBtn" role="button" tabindex="0">Révision <div class="switch"></div></div>
+      <div class="tool edit" id="editBtn" role="button" tabindex="0">Éditeur <div class="switch"></div></div>
+      <div class="tool star" id="starBtn" role="button" tabindex="0">⭐ Annales <div class="switch"></div></div>
+      <div class="tool filter" id="filterBtn" role="button" tabindex="0">Filtrer ⭐ <div class="switch"></div></div>
+      <div class="search">🔍 <input id="searchInput" placeholder="Rechercher…" autocomplete="off"><span class="cnt" id="searchCnt"></span>
+        <button id="searchPrev" title="Précédent">▲</button><button id="searchNext" title="Suivant">▼</button></div>
+      <div class="tool" id="themeBtn" role="button" tabindex="0" title="Mode sombre">🌙</div>
+      <div class="tool" id="tocBtn" role="button" tabindex="0">☰ Plan</div>
+      <div class="tool" id="exportBtn" role="button" tabindex="0">💾 Exporter</div>
+      <div class="tool" id="importBtn" role="button" tabindex="0">📥 Importer</div>
+      <input type="file" id="importFile" accept="application/json" hidden>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div class="kicker">Item 45 · Génétique médicale · Pédiatrie</div>
+    <h1>Spécificités des maladies génétiques</h1>
+    <div class="notes-box"><textarea id="notesArea" class="notes-area" placeholder="Notes pour mes prochaines révisions…"></textarea></div>
+  </div>
+
+  <div id="fiche">
+
+  <!-- ============== 1. CONSEIL GÉNÉTIQUE ============== -->
+  <section id="s1">
+    <div class="sec-head"><div class="sec-num">1</div><h2>Le conseil génétique</h2></div>
+    <p class="sec-sub">Cadre, éthique, annonce — la trame commune des 3 maladies</p>
+    <div class="grid g2">
+      <div class="card">
+        <h3>Définition & objectifs</h3>
+        <p>Processus médical informant un patient / des parents / une famille sur le risque d'<b>apparition</b> ou de <b>récurrence</b> d'une maladie génétique. On informe sur :</p>
+        <ul>
+          <li>La <b>nature</b> et les conséquences médicales de la pathologie</li>
+          <li>La <b>probabilité</b> de développer ou transmettre la maladie</li>
+          <li>Les <b>options</b> de vie et de planification familiale</li>
+        </ul>
+        <h4>Deux temps</h4>
+        <ul>
+          <li><b>Diagnostic</b> → estime le risque (arbre généalogique, analyses géné/cytogénétiques)</li>
+          <li><b>Conseil</b> → discussion des options selon les résultats</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Quand le réaliser ?</h3>
+        <ul>
+          <li><b>Avant conception</b> : antécédents familiaux, parent porteur connu</li>
+          <li><b>Pendant la grossesse</b> : dépistage positif (T21), anomalie échographique</li>
+          <li><b>Après naissance / enfance</b> : malformation congénitale, retard psychomoteur</li>
+          <li><b>Âge adulte</b> : maladies tardives (cancers héréditaires, Huntington)</li>
+          <li><b>Post-mortem</b> : informer et protéger la famille</li>
+        </ul>
+        <div class="callout"><span class="tag">À retenir</span><p>Le conseil génétique accompagne <b>toute la vie</b>, pas seulement la grossesse.</p></div>
+      </div>
+      <div class="card span">
+        <h3>Cadre légal — information à la parentèle (Loi Bioéthique 2011)</h3>
+        <p>Règle <b>fondamentale</b> : avant tout examen génétique, le médecin a l'<b>obligation légale</b> d'informer le patient que, si une anomalie génétique <b>grave</b> est découverte, il devra en informer sa <b>parentèle</b> pour qu'elle bénéficie de conseil / soins / prévention.</p>
+        <ul>
+          <li>En pratique : remise d'un <b>document explicatif</b> à transmettre aux proches</li>
+          <li>Si refus du patient : il peut <b>autoriser par écrit</b> le médecin à contacter la famille directement</li>
+        </ul>
+      </div>
+      <div class="card span">
+        <h3>Les 4 principes éthiques</h3>
+        <div class="callout mnemo"><span class="tag">Moyen mnémo</span><p><b>« A · B · N · J »</b> — <b>A</b>utonomie · <b>B</b>ienfaisance · <b>N</b>on-malfaisance · <b>J</b>ustice</p></div>
+        <table class="tbl"><thead><tr><th>Principe</th><th>Signification</th></tr></thead><tbody>
+          <tr><td><b>Autonomie</b></td><td>Consentement éclairé · information loyale · <b>droit de ne pas savoir</b></td></tr>
+          <tr><td><b>Non-malfaisance</b></td><td><i>Primum non nocere</i> — d'abord ne pas nuire</td></tr>
+          <tr><td><b>Bienfaisance</b></td><td>Améliorer le bien-être de la personne</td></tr>
+          <tr><td><b>Justice</b></td><td>Égalité d'accès (dépistage, diagnostic, soins)</td></tr>
+        </tbody></table>
+        <p style="margin-top:10px;">+ dignité humaine, intégrité corporelle/morale, prise en compte de la <b>vulnérabilité</b>.</p>
+        <div class="callout warn"><span class="tag">Tension éthique · T21</span><p>Dépistage systématiquement proposé → crainte de <b>dérive eugénique</b>. Garde-fou = <b>autonomie</b> : proposé mais jamais imposé, liberté d'arrêter à chaque étape. En pratique, <span class="cle">90–95 %</span> des diagnostics anténataux de T21 mènent à une demande d'IMG.</p></div>
+      </div>
+      <div class="card span">
+        <h3>L'annonce diagnostique</h3>
+        <p>Le diagnostic provoque un <b>bouleversement familial</b> et un état de <b>sidération</b> parentale.</p>
+        <div class="grid g2" style="margin-top:6px;">
+          <div><h4>Conséquences familiales possibles</h4><ul>
+            <li>Tensions parentales → dépression / divorce, <b>déni</b> du handicap</li>
+            <li><b>Surprotection</b> de l'enfant atteint (au détriment de la fratrie)</li>
+            <li>Rejet affectif → maltraitance, rares demandes d'adoption</li>
+          </ul></div>
+          <div><h4>Posture médicale</h4><ul>
+            <li>Lieu <b>calme</b>, en présence des <b>deux parents</b></li>
+            <li>Ne pas inonder d'infos ni asséner les complications futures</li>
+            <li>« Enfant porteur d'une maladie » → l'enfant <b>avant</b> la maladie</li>
+            <li>Pas d'affirmation péremptoire (pronostic <b>imprévisible</b>)</li>
+            <li>Vision <b>positive</b> : objectifs à court terme</li>
+          </ul></div>
+        </div>
+        <p style="margin-top:6px;">Revoir la famille rapidement · soutien psy aux parents <b>et</b> fratrie · <b>guidance parentale</b> · orienter vers les <b>associations de parents</b>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== 2. TRISOMIE 21 ============== -->
+  <section id="s2">
+    <div class="sec-head"><div class="sec-num">2</div><h2>Trisomie 21 (syndrome de Down)</h2></div>
+    <p class="sec-sub">Dépistage → diagnostic → clinique → évolution → récurrence</p>
+    <div class="grid g2">
+      <div class="card span">
+        <h3>Dépistage anténatal — toujours proposé, jamais obligatoire</h3>
+        <p>Consentement <b>écrit</b> à chaque étape · droit de refuser (document signé).</p>
+        <h4>① Test combiné du 1ᵉʳ trimestre</h4>
+        <ul>
+          <li><b>Âge maternel</b></li>
+          <li><b>Clarté nucale</b> (N &lt; <span class="cle">3 mm</span>) à l'écho T1, entre <span class="cle">11 et 13 SA</span></li>
+          <li><b>Marqueurs sériques T1</b> : <span class="cle">PAPP-A</span> + <b>β-hCG libre</b></li>
+          <li>Corrections : poids, tabac, origine géographique, gémellaire</li>
+        </ul>
+        <p style="font-size:13px;"><i>Si non fait au T1</i> → marqueurs sériques T2 (hCG, α-fœtoprotéine, ± œstriol).</p>
+        <h4>② Conduite selon le risque combiné</h4>
+        <table class="tbl"><thead><tr><th>Risque estimé</th><th>Conduite</th></tr></thead><tbody>
+          <tr><td><b>&lt; <span class="cle">1/1000</span></b></td><td>Faible → surveillance habituelle</td></tr>
+          <tr><td><b><span class="cle">1/1000 à 1/51</span></b></td><td><b>DPNI / NIPT</b> (ADN fœtal libre). Se ≈ Sp <span class="cle">&gt; 99 %</span>.<br>négatif : surveillance écho · positif : caryotype fœtal</td></tr>
+          <tr><td><b>≥ <span class="cle">1/50</span></b></td><td>Élevé → <b>caryotype fœtal</b> d'emblée. DPNI possible d'abord pour limiter le risque de fausse couche</td></tr>
+        </tbody></table>
+        <div class="callout warn"><span class="tag">Piège ++</span><p>Le dépistage (DPNI inclus) <b>évalue un risque, ne fait JAMAIS le diagnostic</b>. Aucune IMG sur un seul DPNI+ : il faut un <b>caryotype fœtal</b>.</p></div>
+      </div>
+      <div class="card">
+        <h3>Diagnostic anténatal de certitude</h3>
+        <p>= <b>caryotype fœtal</b> sur prélèvement invasif. Indications :</p>
+        <ul>
+          <li>Signes d'appel échographiques</li>
+          <li>Risque dépistage <b>≥ 1/50</b> ou ADN fœtal anormal</li>
+          <li>Remaniement parental / antécédent d'anomalie chromosomique</li>
+        </ul>
+        <h4>Signes d'appel écho</h4>
+        <ul>
+          <li><b>T1</b> : clarté nucale <span class="cle">&gt; 3,5 mm</span></li>
+          <li><b>T2</b> : cardiopathie, hypo/aplasie os du nez, fémurs courts, sténose duodénale</li>
+          <li><b>T3</b> : RCIU sans cause placentaire, cardiopathie</li>
+        </ul>
+        <p style="font-size:13px;margin-top:8px;">Si T21 confirmée → demande possible d'<b>IMG</b>, évaluée en <b>CPDPN</b>, psychologue systématiquement proposé.</p>
+      </div>
+      <div class="card">
+        <h3>Caryotype fœtal — modalités</h3>
+        <table class="tbl"><thead><tr><th>Prélèvement</th><th>Terme</th><th>F. couche</th></tr></thead><tbody>
+          <tr><td><b>Villosités choriales</b> (PVC)</td><td><span class="cle">12–14 SA</span></td><td><span class="cle">0,5–1 %</span></td></tr>
+          <tr><td><b>Amniocentèse</b> (PLA)</td><td><span class="cle">≥ 15 SA</span></td><td><span class="cle">0,2–0,5 %</span></td></tr>
+          <tr><td><b>Cordocentèse</b></td><td>exceptionnel, &gt; 24 SA</td><td>—</td></tr>
+        </tbody></table>
+        <h4>Délais</h4>
+        <ul>
+          <li>Culture classique : <span class="cle">2–3 semaines</span></li>
+          <li><b>FISH</b> (13,18,21,X,Y) : <span class="cle">24–48 h</span></li>
+          <li>PVC examen direct : 2–3 jours</li>
+        </ul>
+        <h4>Autres risques</h4>
+        <ul>
+          <li>Allo-immunisation si <b>Rh D−</b> → Ig anti-D</li>
+          <li>Discordance fœto-placentaire <b>1–2 %</b> (PVC)</li>
+          <li>Échec de culture, infection, bradycardie (sang)</li>
+        </ul>
+      </div>
+      <div class="card span">
+        <h3>Diagnostic postnatal — triade + dysmorphie</h3>
+        <p>Diagnostic anténatal dans <span class="cle">80–90 %</span> des cas ; sinon évoqué à la naissance.</p>
+        <h4>Triade néonatale</h4>
+        <table class="tbl"><thead><tr><th>Signe</th><th>Détail</th></tr></thead><tbody>
+          <tr><td><b>Hypotonie axiale</b></td><td>Quasi constante, très marquée (non spécifique)</td></tr>
+          <tr><td><b>Souffle cardiaque</b></td><td>→ malformation ≈ <span class="cle">50 %</span> · la + fréquente = <b>canal atrio-ventriculaire</b></td></tr>
+          <tr><td><b>Dysmorphie</b></td><td>Aucun signe pathognomonique → c'est l'<b>accumulation</b> qui oriente</td></tr>
+        </tbody></table>
+        <div class="grid g2" style="margin-top:10px;">
+          <div><h4>Crâne & visage</h4><ul>
+            <li>Petit périmètre crânien, visage rond, profil plat, occiput plat</li>
+            <li>Nuque courte/large, petites oreilles rondes</li>
+            <li><b>Fentes palpébrales obliques en haut/dehors + épicanthus</b></li>
+            <li>Langue protruse, bouche ouverte</li>
+          </ul></div>
+          <div><h4>Membres</h4><ul>
+            <li>Mains trapues, doigts courts hyperlaxes, <b>clinodactylie 5ᵉ doigt</b></li>
+            <li><b>Pli palmaire transverse unique</b> (2/3 des cas)</li>
+            <li>Pieds : <b>signe de la sandale</b></li>
+          </ul></div>
+        </div>
+        <p style="font-size:13px;margin-top:8px;">Plus tard (<b>mosaïque</b>) : retard psychomoteur, difficultés d'apprentissage. <b>Toujours confirmer par caryotype sanguin constitutionnel.</b></p>
+      </div>
+      <div class="card">
+        <h3>Caryotype constitutionnel — prescription</h3>
+        <ul>
+          <li>Sur <b>lymphocytes</b> · prélèvement veineux <span class="cle">2 ml</span> sur tube <b>hépariné</b></li>
+          <li><b>Consentement écrit</b> + attestation de conseil génétique</li>
+          <li>Mineur : seulement si mesures préventives/curatives immédiates possibles</li>
+        </ul>
+        <h4>Information préalable</h4>
+        <ul>
+          <li>Objectif, nature (± puce ADN), <b>limites</b> (anomalies &lt; 5 Mb, mosaïques faibles, échec de culture)</li>
+          <li>Délai T21 : <span class="cle">4–5 jours</span></li>
+          <li>Info à la <b>parentèle</b> · découvertes fortuites</li>
+          <li>Urgence → <b>FISH</b> (24–48 h)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Conseil génétique — récurrence</h3>
+        <table class="tbl"><thead><tr><th>Forme</th><th>Récurrence</th></tr></thead><tbody>
+          <tr><td><b>T21 libre</b> (95 %, non-disjonction)</td><td>≈ <span class="cle">1 %</span> · caryotype parental <b>inutile</b></td></tr>
+          <tr><td>Mosaïque</td><td>Faible</td></tr>
+          <tr><td><b>Translocation</b></td><td>Caryotype parental <b>indispensable</b></td></tr>
+          <tr><td>· de novo</td><td>1 %</td></tr>
+          <tr><td>· parent transloc. équilibrée</td><td><span class="cle">10–100 %</span></td></tr>
+          <tr><td>· Robertson (14;21)</td><td>mat. 10–15 % / pat. 2–5 %</td></tr>
+          <tr><td>· Robertson <b>(21;21)</b></td><td><span class="cle">100 %</span> (monosomie 21 non viable)</td></tr>
+        </tbody></table>
+        <h4>Patients T21 eux-mêmes</h4>
+        <ul>
+          <li><span class="chip h">Homme</span> fertilité très réduite</li>
+          <li><span class="chip f">Femme</span> grossesses possibles, <b>≈ 30 %</b> de transmission</li>
+        </ul>
+      </div>
+      <div class="card span">
+        <h3>Évolution & vieillissement</h3>
+        <div class="grid g3">
+          <div><h4>Petite enfance</h4><ul>
+            <li>Rééducation précoce · <b>CAMSP</b> (≤6 ans) puis SESSAD</li>
+            <li>Marche : <span class="cle">2–3 ans</span></li>
+            <li><b>Langage</b> = le + retardé</li>
+            <li>Cardiopathie <b>40–50 %</b>, digestives (sténose duodénale, imperforation anale)</li>
+          </ul></div>
+          <div><h4>Enfance / ado</h4><ul>
+            <li>QI moyen ≈ <span class="cle">45</span>, ULIS/IME</li>
+            <li>Petite taille (−2 DS), <b>obésité 30–50 %</b></li>
+            <li>Puberté <b>normale</b></li>
+            <li><b>SAOS &gt; 50 %</b>, otites à répétition</li>
+            <li>Hypothyroïdie (bilan annuel), diabète T1, cœliaque</li>
+            <li><b>Leucémie aiguë ×10</b> (LAM)</li>
+            <li>Instabilité <b>C1/C2</b>, TSA 3–10 %</li>
+          </ul></div>
+          <div><h4>Adulte / vieillissement</h4><ul>
+            <li><b>ESAT</b>, foyer · <b>tutelle/curatelle</b> quasi systématique</li>
+            <li><span class="chip h">H</span> stérilité quasi constante · <span class="chip f">F</span> transmission ≈ 30 %</li>
+            <li>Vieillissement précoce dès <b>50 ans</b></li>
+            <li><b>Alzheimer &gt; 50 %</b> après 40 ans</li>
+            <li>Espérance de vie ≈ <span class="cle">60 ans</span></li>
+          </ul></div>
+        </div>
+        <div class="callout"><span class="tag">Fil rouge</span><p>Suivi médical régulier à <b>tout âge</b> (vision, audition, thyroïde) pour éviter un <b>« sur-handicap »</b>.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== 3. MUCOVISCIDOSE ============== -->
+  <section id="s3">
+    <div class="sec-head"><div class="sec-num">3</div><h2>Mucoviscidose</h2></div>
+    <p class="sec-sub">CFTR · autosomique récessive · pénétrance complète, expressivité variable</p>
+    <div class="grid g2">
+      <div class="card">
+        <h3>Génétique</h3>
+        <ul>
+          <li>Gène <b>CFTR</b>, transmission <b>autosomique récessive</b></li>
+          <li>Mutation la + fréquente en France : <b>F508del</b></li>
+          <li>Pénétrance <b>complète</b>, expressivité <b>très variable</b></li>
+        </ul>
+        <h4>Âge de déclaration</h4>
+        <ul>
+          <li>Naissance : <span class="cle">10–20 %</span></li>
+          <li>Nourrisson : <span class="cle">80 %</span></li>
+          <li>Tardif : 10–20 %</li>
+        </ul>
+        <div class="callout mnemo"><span class="tag">Cœur de la maladie</span><p>Atteinte <b>pulmonaire</b> + <b>insuffisance pancréatique exocrine</b>.</p></div>
+      </div>
+      <div class="card">
+        <h3>Dépistage néonatal</h3>
+        <div class="steps">
+          <div class="step"><div class="n"></div><div class="b"><b>Quand</b> : à <span class="cle">48 h</span> (sinon 48–72 h)</div></div>
+          <div class="step"><div class="n"></div><div class="b"><b>Comment</b> : gouttes de sang sur buvard</div></div>
+          <div class="step"><div class="n"></div><div class="b"><b>Analyse</b> : <span class="cle">TIR</span> (sensible, peu spécifique) + mutations CFTR (dont F508del)</div></div>
+          <div class="step"><div class="n"></div><div class="b"><b>Positif si</b> : TIR élevée <b>+ 2 mutations</b></div></div>
+        </div>
+        <p style="font-size:13px;margin-top:8px;">→ confirmer par <b>test de la sueur</b>. Intérêt : PEC précoce en <b>CRCM</b> + conseil génétique.</p>
+      </div>
+      <div class="card span">
+        <h3>Test de la sueur — diagnostic de CERTITUDE</h3>
+        <div class="grid g2">
+          <div><h4>Principe</h4><ul>
+            <li>Stimulation par <b>pilocarpine</b></li>
+            <li>Recueil sur les <b>2 avant-bras</b></li>
+            <li>Dosage du <b>chlore</b></li>
+          </ul><p style="font-size:13px;">Souvent en 1ᵉʳ semaines après dépistage+, parfois tardif (ado/adulte).</p></div>
+          <div><h4>Seuils (chlore)</h4>
+            <table class="tbl"><thead><tr><th>Valeur</th><th>Interprétation</th></tr></thead><tbody>
+              <tr><td><b>&gt; <span class="cle">60 mEq/L</span></b></td><td>Diagnostic <b>confirmé</b></td></tr>
+              <tr><td><b><span class="cle">40–60</span></b></td><td>Intermédiaire → <b>répéter</b></td></tr>
+            </tbody></table>
+          </div>
+        </div>
+      </div>
+      <div class="card span">
+        <h3>Clinique par âge</h3>
+        <div class="grid g3">
+          <div><h4>Néonatal</h4><ul><li>Retard à l'émission du méconium</li><li><b>Iléus méconial</b> (occlusion)</li></ul>
+            <h4>Nourrisson</h4><ul>
+              <li><b>Digestif</b> : stéatorrhée, malnutrition, retard staturo-pondéral, carences vit. liposolubles, ± prolapsus rectal</li>
+              <li><b>Respi</b> : toux chronique, infections à répétition</li>
+            </ul></div>
+          <div><h4>Enfant / ado / adulte — respi & ORL</h4><ul>
+            <li>Dyspnée, sifflements, toux, expectorations mucopurulentes</li>
+            <li>Infections : <b>Haemophilus → Staph doré → Pseudomonas aeruginosa</b></li>
+            <li>Sinusites à répétition, <b>polypes nasaux</b></li>
+          </ul></div>
+          <div><h4>Digestif & autres</h4><ul>
+            <li>IPE ± pancréatite, <b>diabète</b></li>
+            <li>Hépato-biliaire : ictère, <b>cirrhose biliaire</b></li>
+            <li><span class="chip h">H</span> atrésie déférents <b>98 %</b> → azoospermie</li>
+            <li><span class="chip f">F</span> hypofertilité (glaire épaisse)</li>
+            <li>Arthrites · <b>syndrome de perte de sel</b></li>
+          </ul></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Prise en charge (CRCM)</h3>
+        <ul>
+          <li><b>Pulmonaire</b> : kiné respiratoire, mucolytiques, ATB à fortes doses</li>
+          <li><b>Digestif</b> : régime hypercalorique riche en graisses + <b>enzymes pancréatiques</b> + <b>vit. liposolubles</b></li>
+          <li><b>Perte de sel</b> : supplémentation</li>
+          <li><b>Modulateurs</b> CFTR (mutations spécifiques)</li>
+          <li><b>Formes graves</b> : greffe poumon ± foie</li>
+          <li><b>Infertilité H</b> : AMP / FIV</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Imagerie de surveillance</h3>
+        <h4>Respiratoire</h4>
+        <ul><li>Routine : <b>RP ≥ 1×/an</b> + nouveau symptôme ; TDM discuté</li><li>Aggravation : <b>TDM</b> ± IRM / angio-scanner</li></ul>
+        <h4>Digestif</h4>
+        <ul><li>Routine : <b>échodoppler hép. & dig. 1×/an</b></li><li>Aggravation : IRM ou scanner abdo</li></ul>
+      </div>
+      <div class="card span">
+        <h3>Diagnostic anténatal</h3>
+        <div class="grid g2">
+          <div><h4>① Signe d'appel écho</h4><ul>
+            <li><b>Intestin hyperéchogène</b> (muco ≈ <span class="cle">5 %</span> seulement)</li>
+            <li>Risque ↑ si <b>vésicule biliaire non vue</b></li>
+            <li>Démarche : étude CFTR du <b>couple</b> → si mutation, recherche fœtale par <b>amniocentèse</b></li>
+          </ul></div>
+          <div><h4>② Antécédents familiaux</h4><ul>
+            <li>Deux parents <b>hétérozygotes</b> → <b>1/4 (25 %)</b></li>
+            <li>Un parent malade + conjoint porteur sain → <b>1/2 (50 %)</b></li>
+            <li>Prélèvement : villosités (<b>11 SA</b>) ou amniocentèse (<b>16 SA</b>)</li>
+          </ul></div>
+        </div>
+        <p style="font-size:13px;margin-top:6px;">Alternative pré-conceptionnelle : <b>diagnostic pré-implantatoire (DPI)</b>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============== 4. X FRAGILE ============== -->
+  <section id="s4">
+    <div class="sec-head"><div class="sec-num">4</div><h2>Syndrome de l'X fragile</h2></div>
+    <p class="sec-sub">Gène FMR1 · expansion CGG · 1ʳᵉ cause monogénique de déficience intellectuelle</p>
+    <div class="grid g2">
+      <div class="card span">
+        <h3>Génétique — gène FMR1, expansion CGG</h3>
+        <p>Mutation <b>instable</b> sur <b>FMR1</b> (Xq27, bras long X). Code la protéine <b>FMRP</b> (plasticité synaptique). Mécanisme = <b>expansion de triplets CGG</b> en 5'UTR, s'aggravant au fil des générations.</p>
+        <table class="tbl"><thead><tr><th>Allèle</th><th>CGG</th><th>Mécanisme & clinique</th></tr></thead><tbody>
+          <tr><td><b>Normal</b></td><td><span class="cle">&lt; 45</span></td><td>Stable (interruptions <b>AGG</b>)</td></tr>
+          <tr><td><b>Intermédiaire</b></td><td><span class="cle">45–54</span></td><td>Instable, peut évoluer vers prémutation</td></tr>
+          <tr><td><b>Prémutation</b></td><td><span class="cle">55–200</span></td><td>Pas d'hyperméthylation, FMRP <b>produite</b> · toxicité <b>ARNm</b> (gain de fonction)</td></tr>
+          <tr><td><b>Mutation complète</b></td><td><span class="cle">&gt; 200</span></td><td><b>Hyperméthylation</b> → <b>absence de FMRP</b> (perte de fonction)</td></tr>
+        </tbody></table>
+        <div class="callout warn"><span class="tag">Règle clé de transmission</span><p>Passage prémutation → mutation complète <b>exclusivement par transmission maternelle</b>. Risque corrélé à la taille de la prémutation chez la mère.</p></div>
+        <p style="font-size:13px;margin-top:8px;">Rares cas : <b>délétions</b> de FMR1 ou variants faux-sens. Mutation complète → cassures <b>Xq27.3</b> sur 5–40 % des mitoses.</p>
+      </div>
+      <div class="card">
+        <h3>Mutation complète (&gt; 200 CGG)</h3>
+        <p><b>1ʳᵉ cause monogénique</b> de DI · <b>1ʳᵉ cause génétique de TSA</b>.</p>
+        <h4><span class="chip h">Garçons</span> triade</h4>
+        <ul>
+          <li><b>DI</b> modérée à sévère (QI &lt; 50), retard de langage</li>
+          <li><b>Dysmorphie</b> : visage allongé, front haut, grandes oreilles décollées, menton long (prognathisme), palais ogival</li>
+          <li><b>Macro-orchidie après puberté</b></li>
+        </ul>
+        <p style="font-size:13px;">Comportement : hyperactivité, anxiété, évitement du regard, <b>TSA 30–50 %</b>. Épilepsie ≈ 20 %. Hyperlaxité, scoliose, prolapsus mitral.</p>
+        <h4><span class="chip f">Filles</span> pénétrance incomplète</h4>
+        <ul>
+          <li>DI chez <b>50 %</b> seulement, moins sévère (QI 50–70)</li>
+          <li>Timidité, anxiété · dysmorphie <b>rare ou absente</b></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Prémutation (55–200) — 3 formes</h3>
+        <p>Pas de DI (gène fonctionnel) ; pathologies adultes par toxicité ARNm.</p>
+        <h4>FXPOI — insuffisance ovarienne</h4>
+        <ul><li><span class="chip f">F</span> ≈ <span class="cle">20 %</span> des porteuses</li><li>Troubles du cycle, infertilité, <b>ménopause précoce &lt; 40 ans</b></li></ul>
+        <h4>FXTAS — tremblement-ataxie</h4>
+        <ul>
+          <li>Neurodégénératif, début <b>&gt; 60 ans (ou 50)</b></li>
+          <li><span class="chip h">H</span> ≈ <span class="cle">40 %</span> · <span class="chip f">F</span> ≈ <span class="cle">16 %</span></li>
+          <li>Tremblement, ataxie cérébelleuse, syndrome parkinsonien, démence</li>
+          <li>IRM : <b>hypersignaux pédoncules cérébelleux moyens / splénium</b></li>
+        </ul>
+        <h4>FXAND — neuropsychiatrique</h4>
+        <ul><li>TDAH, traits autistiques</li><li><span class="chip f">F</span> anxiodépression, phobie sociale, <b>fibromyalgie</b></li></ul>
+      </div>
+      <div class="card span">
+        <h3>Quand y penser ? (diagnostic clinique difficile)</h3>
+        <p>Signes discrets, peu spécifiques → l'évoquer systématiquement devant :</p>
+        <ul>
+          <li><b>Toute DI inexpliquée</b> → test génétique en 1ʳᵉ intention. (1ʳᵉ cause de DI familiale, 2ᵉ cause de DI génétique <b>après la T21</b>)</li>
+          <li><b>TSA</b> (1ʳᵉ cause génétique de TSA)</li>
+          <li><b>Antécédents familiaux</b> de prémutation : insuffisance ovarienne prématurée, FXTAS chez apparentés âgés → <b>arbre généalogique fondamental</b></li>
+        </ul>
+        <div class="grid g2" style="margin-top:8px;">
+          <div><h4>Épidémiologie</h4><ul>
+            <li>Mutation complète : <b>1/4000–5000 garçons</b>, 1/5000–8000 filles</li>
+            <li>Prémutation : <b>1 femme/250</b>, 1 homme/500</li>
+          </ul></div>
+          <div><h4>Confirmation</h4><ul>
+            <li><b>PCR + Southern blot</b> (invisible au caryotype standard)</li>
+            <li>Évalue expansion CGG + méthylation FMR1</li>
+          </ul></div>
+        </div>
+        <div class="callout"><span class="tag">Conseil génétique</span><p>Info aux apparentés <b>obligatoire</b>. Femme <b>mutation complète</b> → <b>50 %</b> de transmission. <b>Prémutation</b> → risque selon le nombre de CGG, s'aggravant au fil des générations.</p></div>
+      </div>
+    </div>
+  </section>
+
+  </div><!-- /#fiche -->
+
+  <!-- ============== FLASHCARDS ============== -->
+  <div class="module" id="m-cards">
+    <div class="module-head">
+      <div class="ic">🎴</div>
+      <div><h2>Flashcards</h2></div>
+    </div>
+    <div class="fc-stage"><div class="flashcard" id="flashcard" style="display:none;">
+      <div class="fc-inner">
+        <div class="fc-face fc-front"><div class="lbl">Question</div><div class="txt" id="fcFront"></div></div>
+        <div class="fc-face fc-back"><div class="lbl">Réponse</div><div class="txt" id="fcBack"></div></div>
+      </div>
+    </div><div class="fc-empty" id="fcEmpty">Aucune carte pour l'instant — ajoute-en une ci-dessous.</div></div>
+    <div class="fc-ctrl" id="fcCtrl" style="display:none;">
+      <button id="fcPrev">← Préc.</button>
+      <span class="fc-pos" id="fcPos"></span>
+      <button id="fcNext">Suiv. →</button>
+      <button id="fcShuffle">🔀 Mélanger</button>
+      <button id="fcDel">🗑 Supprimer</button>
+    </div>
+    <div class="addform two">
+      <input class="f" id="cardFront" placeholder="Recto (question)…">
+      <input class="f" id="cardBack" placeholder="Verso (réponse)…">
+      <div class="span-full"><button class="btn" id="cardAdd">Ajouter la carte</button></div>
+    </div>
+  </div>
+
+  <!-- ============== CARNET D'ERREUR ============== -->
+  <div class="module" id="m-carnet">
+    <div class="module-head">
+      <div class="ic">📓</div>
+      <div><h2>Carnet d'erreur</h2></div>
+    </div>
+    <div id="carnetList"></div>
+    <div class="addform">
+      <textarea class="f" id="carnetText" placeholder="Décris ton erreur, le piège, la bonne réponse…"></textarea>
+      <div class="thumbs" id="carnetThumbs"></div>
+      <div class="formrow">
+        <button class="btn" id="carnetAdd">Ajouter au carnet</button>
+        <label class="btn ghost sm" for="carnetImg">🖼 Ajouter une image</label>
+        <input type="file" id="carnetImg" accept="image/*" multiple hidden>
+      </div>
+    </div>
+  </div>
+
+  <footer>Fiche de révision · Conseil génétique &amp; maladies génétiques</footer>
+</div>
+
+<!-- overlays -->
+<div class="scrim" id="scrim"></div>
+<aside class="toc" id="toc"><button class="close" id="tocClose">×</button><h4>Plan de la fiche</h4><div id="tocBody"></div></aside>
+<button id="maskbtn">Masquer</button>
+<div class="toast" id="toast"></div>
+<div class="lightbox" id="lightbox"><img id="lightboxImg" alt=""></div>
+<button class="backtop" id="backtop">↑</button>
+
+<script>
+"use strict";
+/* ============ STORAGE ============ */
+const KEY='fiche-genetique-v2';
+function loadDB(){try{return JSON.parse(localStorage.getItem(KEY))||{};}catch(e){return{};}}
+let DB=Object.assign({trous:[],cards:[],carnet:[],stars:[],notes:'',calloutEdits:{},calloutDeleted:[],calloutsAdded:[],theme:'light'},loadDB());
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(DB));}catch(e){toast("⚠️ Sauvegarde impossible (stockage plein/bloqué). Exporte tes données.");}}
+const body=document.body;
+const DEFAULT_CARDS=[
+  {front:"Les 4 principes éthiques du conseil génétique ?",back:"Autonomie · Bienfaisance · Non-malfaisance · Justice (A·B·N·J)"},
+  {front:"Que recouvre le principe d'autonomie ?",back:"Consentement éclairé, information loyale, droit de ne pas savoir"},
+  {front:"Obligation légale avant tout examen génétique (loi 2011) ?",back:"Informer le patient qu'en cas d'anomalie grave, il devra prévenir sa parentèle"},
+  {front:"% des diagnostics anténataux de T21 menant à une demande d'IMG ?",back:"90–95 %"},
+  {front:"T21 — clarté nucale : seuil normal et signe d'appel au T1 ?",back:"Normal < 3 mm · signe d'appel si > 3,5 mm"},
+  {front:"T21 — marqueurs sériques du 1er trimestre ?",back:"PAPP-A + β-hCG libre"},
+  {front:"T21 — conduite si risque combiné entre 1/1000 et 1/51 ?",back:"DPNI / NIPT (ADN fœtal libre), Se/Sp > 99 %"},
+  {front:"T21 — conduite si risque ≥ 1/50 ?",back:"Caryotype fœtal d'emblée (DPNI possible avant pour limiter la fausse couche)"},
+  {front:"Le DPNI pose-t-il le diagnostic de T21 ?",back:"Non — il évalue un risque. Diagnostic de certitude = caryotype fœtal"},
+  {front:"T21 — amniocentèse : terme et risque de fausse couche ?",back:"≥ 15 SA · 0,2–0,5 %"},
+  {front:"T21 — PVC (villosités choriales) : terme et risque ?",back:"12–14 SA · 0,5–1 %"},
+  {front:"Délai d'un résultat par FISH ?",back:"24–48 h (chromosomes 13, 18, 21, X, Y)"},
+  {front:"Triade clinique néonatale de la T21 ?",back:"Hypotonie axiale + souffle cardiaque + dysmorphie"},
+  {front:"T21 — cardiopathie la plus fréquente ?",back:"Canal atrio-ventriculaire (≈ 50 % ont une cardiopathie)"},
+  {front:"Récurrence d'une T21 libre ?",back:"≈ 1 % · caryotype parental inutile"},
+  {front:"Récurrence d'une translocation robertsonienne (21;21) ?",back:"100 % (monosomie 21 non viable)"},
+  {front:"Risque qu'une femme atteinte de T21 transmette la trisomie ?",back:"≈ 30 %"},
+  {front:"Examen confirmant la T21 ?",back:"Caryotype constitutionnel (sang veineux, tube hépariné)"},
+  {front:"Mode de transmission de la mucoviscidose ?",back:"Autosomique récessif · gène CFTR (mutation F508del la + fréquente)"},
+  {front:"Dépistage néonatal muco : positif si ?",back:"TIR élevée + 2 mutations CFTR"},
+  {front:"Examen de certitude de la mucoviscidose ?",back:"Test de la sueur (dosage du chlore)"},
+  {front:"Seuils du test de la sueur ?",back:"> 60 mEq/L = confirmé · 40–60 = intermédiaire (à répéter)"},
+  {front:"Muco — germe colonisant tardivement les bronches ?",back:"Pseudomonas aeruginosa (après Haemophilus puis Staph doré)"},
+  {front:"Muco — cause d'infertilité masculine ?",back:"Atrésie des canaux déférents (98 %) → azoospermie obstructive"},
+  {front:"Signe d'appel échographique anténatal de muco ?",back:"Intestin hyperéchogène (muco dans ≈ 5 %)"},
+  {front:"Gène et anomalie de l'X fragile ?",back:"FMR1 (Xq27) · expansion de triplets CGG"},
+  {front:"X fragile — CGG : prémutation vs mutation complète ?",back:"Prémutation 55–200 · mutation complète > 200"},
+  {front:"X fragile — quand passe-t-on de prémutation à mutation complète ?",back:"Exclusivement par transmission maternelle"},
+  {front:"X fragile — triade clinique du garçon (mutation complète) ?",back:"Déficience intellectuelle + dysmorphie + macro-orchidie post-pubertaire"},
+  {front:"X fragile — les 3 formes liées à la prémutation ?",back:"FXPOI (insuff. ovarienne) · FXTAS (tremblement-ataxie) · FXAND (neuropsy)"},
+  {front:"1ʳᵉ cause monogénique de déficience intellectuelle ?",back:"Syndrome de l'X fragile (et 1ʳᵉ cause génétique de TSA)"},
+  {front:"Test diagnostique de l'X fragile ?",back:"PCR + Southern blot (invisible au caryotype standard)"}
+];
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),2600);}
+const fiche=document.getElementById('fiche');
+
+/* ============ THEME ============ */
+function applyTheme(){document.documentElement.setAttribute('data-theme',DB.theme==='dark'?'dark':'light');
+  document.getElementById('themeBtn').textContent=DB.theme==='dark'?'☀️':'🌙';}
+document.getElementById('themeBtn').onclick=()=>{DB.theme=DB.theme==='dark'?'light':'dark';applyTheme();persist();};
+applyTheme();
+
+/* ============ MODE RÉVISION ============ */
+const revBtn=document.getElementById('revBtn');
+function toggleRev(){body.classList.toggle('revision');revBtn.classList.toggle('active',body.classList.contains('revision'));
+  if(body.classList.contains('editmode'))toggleEdit();
+  if(!body.classList.contains('revision'))document.querySelectorAll('.cle.show').forEach(e=>e.classList.remove('show'));}
+revBtn.onclick=toggleRev;
+revBtn.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleRev();}};
+document.addEventListener('click',e=>{
+  if(body.classList.contains('revision')&&!body.classList.contains('editmode')&&!body.classList.contains('starmode')&&e.target.classList.contains('cle'))
+    e.target.classList.toggle('show');
+});
+
+/* ============ TROUS PERSONNALISÉS ============ */
+function ficheTextNodes(){
+  const w=document.createTreeWalker(fiche,NodeFilter.SHOW_TEXT,{acceptNode(n){
+    if(!n.nodeValue.trim())return NodeFilter.FILTER_REJECT;
+    if(n.parentElement.closest('mark.srch'))return NodeFilter.FILTER_SKIP;
+    if(n.parentElement.closest('.co-ctrl, .addco'))return NodeFilter.FILTER_REJECT;
+    return NodeFilter.FILTER_ACCEPT;}});
+  const a=[];let n;while(n=w.nextNode())a.push(n);return a;
+}
+/* applique un trou = enrobe la (occ+1)-ème occurrence de `text` */
+function applyTrou(text,occ,uid){
+  if(!text)return false;
+  const nodes=ficheTextNodes();let k=0;
+  for(const node of nodes){
+    let from=0,idx;
+    while((idx=node.nodeValue.indexOf(text,from))!==-1){
+      if(k===occ){
+        const r=document.createRange();r.setStart(node,idx);r.setEnd(node,idx+text.length);
+        const span=document.createElement('span');span.className='cle cle-user';span.dataset.uid=uid;
+        try{r.surroundContents(span);}catch(e){return false;}
+        return true;
+      }
+      k++;from=idx+text.length;
+    }
+  }
+  return false;
+}
+function restoreTrous(){(DB.trous||[]).forEach(t=>applyTrou(t.text,t.occ,t.uid));}
+
+/* éditeur : sélection -> bouton masquer */
+const editBtn=document.getElementById('editBtn'), maskbtn=document.getElementById('maskbtn');
+function toggleEdit(){
+  body.classList.toggle('editmode');
+  const on=body.classList.contains('editmode');
+  editBtn.classList.toggle('active',on);
+  if(on){if(!body.classList.contains('revision')){body.classList.add('revision');revBtn.classList.add('active');}toast("Sélectionne du texte puis « Masquer » · ✎ modifie un encadré · + en bas de section pour en ajouter.");}
+  else{maskbtn.style.display='none';}
+}
+editBtn.onclick=toggleEdit;
+editBtn.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleEdit();}};
+
+document.addEventListener('mouseup',e=>{
+  if(!body.classList.contains('editmode'))return;
+  if(e.target===maskbtn)return;
+  setTimeout(()=>{
+    const sel=window.getSelection();
+    if(!sel||sel.isCollapsed||!sel.toString().trim()){maskbtn.style.display='none';return;}
+    const r=sel.getRangeAt(0);
+    if(!fiche.contains(r.commonAncestorContainer)){maskbtn.style.display='none';return;}
+    const anc=r.commonAncestorContainer.nodeType===1?r.commonAncestorContainer:r.commonAncestorContainer.parentElement;
+    if(anc&&anc.closest('[contenteditable="true"], .co-ctrl, .addco')){maskbtn.style.display='none';return;}
+    const rect=r.getBoundingClientRect();
+    maskbtn.style.display='block';
+    maskbtn.style.top=(window.scrollY+rect.top-40)+'px';
+    maskbtn.style.left=(window.scrollX+rect.left+rect.width/2-44)+'px';
+  },10);
+});
+maskbtn.onclick=()=>{
+  const sel=window.getSelection();if(!sel||sel.isCollapsed)return;
+  const r=sel.getRangeAt(0);
+  if(r.startContainer!==r.endContainer||r.startContainer.nodeType!==3){toast("Sélectionne un passage dans une seule ligne.");return;}
+  const text=sel.toString();
+  /* calcule l'occurrence en parcourant les nœuds dans l'ordre */
+  const nodes=ficheTextNodes();let occ=0,found=false;
+  for(const node of nodes){
+    if(node===r.startContainer){
+      let from=0,idx;while((idx=node.nodeValue.indexOf(text,from))!==-1){if(idx===r.startOffset){found=true;break;}occ++;from=idx+text.length;}
+      break;
+    }
+    let from=0,idx;while((idx=node.nodeValue.indexOf(text,from))!==-1){occ++;from=idx+text.length;}
+  }
+  if(!found){toast("Impossible de cacher cette sélection.");return;}
+  const uid='u'+Date.now()+Math.floor(Math.random()*999);
+  sel.removeAllRanges();
+  if(applyTrou(text,occ,uid)){DB.trous.push({text,occ,uid});persist();maskbtn.style.display='none';toast("Trou ajouté ✓");}
+  else toast("Impossible de cacher cette sélection.");
+};
+/* clic sur un trou perso en mode éditeur -> suppression */
+document.addEventListener('click',e=>{
+  if(!body.classList.contains('editmode'))return;
+  const t=e.target.closest('.cle-user');if(!t)return;
+  const uid=t.dataset.uid;
+  DB.trous=DB.trous.filter(x=>x.uid!==uid);persist();
+  const parent=t.parentNode;while(t.firstChild)parent.insertBefore(t.firstChild,t);parent.removeChild(t);parent.normalize();
+  toast("Trou retiré");
+});
+
+/* ============ ÉTOILES ANNALES ============ */
+const starBtn=document.getElementById('starBtn');
+function starrables(){return [...fiche.querySelectorAll('li, tbody tr')];}
+function indexStarrables(){starrables().forEach((el,i)=>el.dataset.sid=i);}
+function restoreStars(){const set=new Set(DB.stars||[]);starrables().forEach((el,i)=>el.classList.toggle('starred',set.has(i)));}
+function toggleStarMode(){
+  body.classList.toggle('starmode');
+  const on=body.classList.contains('starmode');
+  starBtn.classList.toggle('active',on);
+  if(on&&body.classList.contains('editmode'))toggleEdit();
+  if(on&&body.classList.contains('filterstar'))toggleFilter();
+  if(on)toast("Clique une puce ou une ligne de tableau pour la marquer ⭐ (déjà tombée).");
+}
+starBtn.onclick=toggleStarMode;
+starBtn.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleStarMode();}};
+fiche.addEventListener('click',e=>{
+  if(!body.classList.contains('starmode'))return;
+  const el=e.target.closest('li, tbody tr');if(!el||!fiche.contains(el))return;
+  e.preventDefault();
+  const sid=Number(el.dataset.sid);
+  el.classList.toggle('starred');
+  DB.stars=DB.stars||[];
+  if(el.classList.contains('starred')){if(!DB.stars.includes(sid))DB.stars.push(sid);}
+  else DB.stars=DB.stars.filter(x=>x!==sid);
+  persist();
+});
+
+/* ============ FILTRE ANNALES ============ */
+const filterBtn=document.getElementById('filterBtn');
+function toggleFilter(){
+  if(!body.classList.contains('filterstar')){
+    if(!(DB.stars&&DB.stars.length)){toast("Aucune notion marquée ⭐ pour l'instant.");return;}
+    if(body.classList.contains('starmode'))toggleStarMode();
+  }
+  body.classList.toggle('filterstar');
+  const on=body.classList.contains('filterstar');
+  filterBtn.classList.toggle('active',on);
+  if(on){toast("Affichage : notions ⭐ uniquement.");scrollTo({top:0,behavior:'smooth'});}
+  else toast("Affichage complet.");
+}
+filterBtn.onclick=toggleFilter;
+filterBtn.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleFilter();}};
+
+/* ============ RECHERCHE ============ */
+const sInput=document.getElementById('searchInput'),sCnt=document.getElementById('searchCnt');
+let matches=[],curMatch=-1;
+function clearSearch(){document.querySelectorAll('mark.srch').forEach(m=>{const p=m.parentNode;while(m.firstChild)p.insertBefore(m.firstChild,m);p.removeChild(m);p.normalize();});matches=[];curMatch=-1;sCnt.textContent='';}
+function runSearch(q){
+  clearSearch();if(!q||q.length<2){return;}
+  const ql=q.toLowerCase();const nodes=ficheTextNodes();
+  nodes.forEach(node=>{
+    const val=node.nodeValue,low=val.toLowerCase();if(!low.includes(ql))return;
+    const frag=document.createDocumentFragment();let from=0,idx;
+    while((idx=low.indexOf(ql,from))!==-1){
+      if(idx>from)frag.appendChild(document.createTextNode(val.slice(from,idx)));
+      const m=document.createElement('mark');m.className='srch';m.textContent=val.slice(idx,idx+q.length);frag.appendChild(m);matches.push(m);
+      from=idx+q.length;
+    }
+    if(from<val.length)frag.appendChild(document.createTextNode(val.slice(from)));
+    node.parentNode.replaceChild(frag,node);
+  });
+  sCnt.textContent=matches.length?('1/'+matches.length):'0';
+  if(matches.length){curMatch=0;focusMatch();}
+}
+function focusMatch(){matches.forEach(m=>m.classList.remove('cur'));const m=matches[curMatch];if(!m)return;m.classList.add('cur');
+  m.scrollIntoView({behavior:'smooth',block:'center'});sCnt.textContent=(curMatch+1)+'/'+matches.length;}
+let sT;sInput.addEventListener('input',()=>{clearTimeout(sT);sT=setTimeout(()=>runSearch(sInput.value.trim()),200);});
+sInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();if(matches.length){curMatch=(curMatch+1)%matches.length;focusMatch();}}});
+document.getElementById('searchNext').onclick=()=>{if(matches.length){curMatch=(curMatch+1)%matches.length;focusMatch();}};
+document.getElementById('searchPrev').onclick=()=>{if(matches.length){curMatch=(curMatch-1+matches.length)%matches.length;focusMatch();}};
+
+/* ============ SOMMAIRE ============ */
+const toc=document.getElementById('toc'),scrim=document.getElementById('scrim');
+function buildTOC(){
+  const body=document.getElementById('tocBody');body.innerHTML='';
+  fiche.querySelectorAll('section').forEach(sec=>{
+    const h=sec.querySelector('h2'),a=document.createElement('a');a.className='head';a.href='#'+sec.id;a.textContent=h.textContent;
+    a.onclick=closeTOC;body.appendChild(a);
+    sec.querySelectorAll('.card h3').forEach((h3,i)=>{
+      if(!h3.id)h3.id=sec.id+'-c'+i;
+      const s=document.createElement('a');s.className='sub';s.href='#'+h3.id;s.textContent=h3.textContent;s.onclick=closeTOC;body.appendChild(s);
+    });
+  });
+  ['m-cards','m-carnet'].forEach(id=>{const el=document.getElementById(id);const a=document.createElement('a');a.className='head';a.href='#'+id;a.textContent=el.querySelector('h2').textContent;a.onclick=closeTOC;body.appendChild(a);});
+}
+function openTOC(){buildTOC();toc.classList.add('open');scrim.classList.add('on');}
+function closeTOC(){toc.classList.remove('open');scrim.classList.remove('on');}
+document.getElementById('tocBtn').onclick=openTOC;
+document.getElementById('tocClose').onclick=closeTOC;
+scrim.onclick=closeTOC;
+
+/* ============ FLASHCARDS ============ */
+const fcEl=document.getElementById('flashcard'),fcFront=document.getElementById('fcFront'),fcBack=document.getElementById('fcBack');
+const fcEmpty=document.getElementById('fcEmpty'),fcCtrl=document.getElementById('fcCtrl'),fcPos=document.getElementById('fcPos');
+let fcIdx=0;
+function renderCard(){
+  const cards=DB.cards;
+  if(!cards.length){fcEl.style.display='none';fcCtrl.style.display='none';fcEmpty.style.display='block';return;}
+  fcEmpty.style.display='none';fcEl.style.display='block';fcCtrl.style.display='flex';
+  if(fcIdx>=cards.length)fcIdx=0;
+  fcEl.classList.remove('flip');
+  fcFront.textContent=cards[fcIdx].front;fcBack.textContent=cards[fcIdx].back;
+  fcPos.textContent=(fcIdx+1)+' / '+cards.length;
+}
+fcEl.onclick=()=>fcEl.classList.toggle('flip');
+document.getElementById('fcNext').onclick=()=>{fcIdx=(fcIdx+1)%DB.cards.length;renderCard();};
+document.getElementById('fcPrev').onclick=()=>{fcIdx=(fcIdx-1+DB.cards.length)%DB.cards.length;renderCard();};
+document.getElementById('fcShuffle').onclick=()=>{for(let i=DB.cards.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[DB.cards[i],DB.cards[j]]=[DB.cards[j],DB.cards[i]];}fcIdx=0;persist();renderCard();toast("Mélangé 🔀");};
+document.getElementById('fcDel').onclick=()=>{if(!DB.cards.length)return;DB.cards.splice(fcIdx,1);persist();renderCard();toast("Carte supprimée");};
+document.getElementById('cardAdd').onclick=()=>{
+  const f=document.getElementById('cardFront'),b=document.getElementById('cardBack');
+  if(!f.value.trim()||!b.value.trim()){toast("Remplis le recto et le verso.");return;}
+  DB.cards.push({front:f.value.trim(),back:b.value.trim()});persist();
+  f.value='';b.value='';fcIdx=DB.cards.length-1;renderCard();toast("Carte ajoutée ✓");
+};
+
+/* ============ CARNET D'ERREUR ============ */
+const carnetList=document.getElementById('carnetList'),carnetThumbs=document.getElementById('carnetThumbs');
+let pendingImgs=[];
+function renderThumbs(){
+  carnetThumbs.innerHTML='';
+  pendingImgs.forEach((src,i)=>{
+    const d=document.createElement('div');d.className='t';
+    const img=document.createElement('img');img.src=src;
+    const x=document.createElement('button');x.className='x';x.textContent='×';x.onclick=()=>{pendingImgs.splice(i,1);renderThumbs();};
+    d.appendChild(img);d.appendChild(x);carnetThumbs.appendChild(d);
+  });
+}
+function renderCarnet(){
+  carnetList.innerHTML='';
+  if(!DB.carnet.length){const p=document.createElement('p');p.style.cssText='color:var(--ink-faint);font-size:13.5px;margin:6px 0 0;';p.textContent="Ton carnet est vide pour l'instant.";carnetList.appendChild(p);return;}
+  DB.carnet.slice().reverse().forEach(entry=>{
+    const realIdx=DB.carnet.indexOf(entry);
+    const e=document.createElement('div');e.className='entry';
+    const meta=document.createElement('div');meta.className='meta';
+    const date=document.createElement('span');date.className='date';date.textContent=entry.date;
+    const del=document.createElement('button');del.className='del';del.textContent='🗑 supprimer';
+    del.onclick=()=>{DB.carnet.splice(realIdx,1);persist();renderCarnet();toast("Entrée supprimée");};
+    meta.appendChild(date);meta.appendChild(del);e.appendChild(meta);
+    if(entry.text){const b=document.createElement('div');b.className='body';b.textContent=entry.text;e.appendChild(b);}
+    if(entry.imgs&&entry.imgs.length){const wrap=document.createElement('div');wrap.className='imgs';
+      entry.imgs.forEach(src=>{const im=document.createElement('img');im.src=src;im.onclick=()=>openLightbox(src);wrap.appendChild(im);});e.appendChild(wrap);}
+    carnetList.appendChild(e);
+  });
+}
+function filesToImgs(files){
+  [...files].forEach(file=>{if(!file.type.startsWith('image/'))return;
+    const reader=new FileReader();reader.onload=ev=>{pendingImgs.push(ev.target.result);renderThumbs();};reader.readAsDataURL(file);});
+}
+document.getElementById('carnetImg').addEventListener('change',e=>{filesToImgs(e.target.files);e.target.value='';});
+document.getElementById('carnetText').addEventListener('paste',e=>{
+  const items=e.clipboardData&&e.clipboardData.items;if(!items)return;
+  for(const it of items){if(it.type.startsWith('image/')){const f=it.getAsFile();if(f){const r=new FileReader();r.onload=ev=>{pendingImgs.push(ev.target.result);renderThumbs();toast("Capture ajoutée 📎");};r.readAsDataURL(f);}}}
+});
+document.getElementById('carnetAdd').onclick=()=>{
+  const t=document.getElementById('carnetText');
+  if(!t.value.trim()&&!pendingImgs.length){toast("Ajoute du texte ou une image.");return;}
+  const d=new Date();const date=d.toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'})+' · '+d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+  DB.carnet.push({date,text:t.value.trim(),imgs:pendingImgs.slice()});persist();
+  t.value='';pendingImgs=[];renderThumbs();renderCarnet();toast("Ajouté au carnet ✓");
+};
+
+/* ============ LIGHTBOX ============ */
+const lb=document.getElementById('lightbox'),lbImg=document.getElementById('lightboxImg');
+function openLightbox(src){lbImg.src=src;lb.classList.add('on');}
+lb.onclick=()=>lb.classList.remove('on');
+
+/* ============ EXPORT / IMPORT ============ */
+document.getElementById('exportBtn').onclick=()=>{
+  const data=JSON.stringify({trous:DB.trous,cards:DB.cards,carnet:DB.carnet,stars:DB.stars,notes:DB.notes,calloutEdits:DB.calloutEdits,calloutDeleted:DB.calloutDeleted,calloutsAdded:DB.calloutsAdded,theme:DB.theme,_v:2,_date:new Date().toISOString()},null,2);
+  const blob=new Blob([data],{type:'application/json'});const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='fiche-genetique-sauvegarde.json';a.click();URL.revokeObjectURL(url);
+  toast("Sauvegarde exportée 💾");
+};
+document.getElementById('importBtn').onclick=()=>document.getElementById('importFile').click();
+document.getElementById('importFile').addEventListener('change',e=>{
+  const file=e.target.files[0];if(!file)return;const reader=new FileReader();
+  reader.onload=ev=>{try{
+    const d=JSON.parse(ev.target.result);
+    if(!confirm("Importer cette sauvegarde ? Tes trous, flashcards et carnet actuels seront remplacés."))return;
+    DB.trous=d.trous||[];DB.cards=d.cards||[];DB.carnet=d.carnet||[];DB.stars=d.stars||[];DB.notes=d.notes||'';if(d.theme)DB.theme=d.theme;
+    persist();
+    document.querySelectorAll('.cle-user').forEach(t=>{const p=t.parentNode;while(t.firstChild)p.insertBefore(t.firstChild,t);p.removeChild(t);p.normalize();});
+    document.querySelectorAll('.starred').forEach(s=>s.classList.remove('starred'));
+    restoreTrous();restoreStars();applyTheme();notesArea.value=DB.notes;fcIdx=0;renderCard();renderCarnet();
+    toast("Sauvegarde importée ✓");
+  }catch(err){toast("Fichier invalide.");}};
+  reader.readAsText(file);e.target.value='';
+});
+
+/* ============ DIVERS ============ */
+const bt=document.getElementById('backtop');
+addEventListener('scroll',()=>bt.classList.toggle('on',scrollY>500));
+bt.onclick=()=>scrollTo({top:0,behavior:'smooth'});
+const links=[...document.querySelectorAll('.nav a')];
+const obs=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){const id='#'+en.target.id;
+  links.forEach(l=>{const on=l.getAttribute('href')===id;l.style.background=on?'var(--card)':'';l.style.borderColor=on?'var(--line)':'transparent';});}}),
+  {rootMargin:'-45% 0px -50% 0px'});
+document.querySelectorAll('#fiche section, .module').forEach(s=>obs.observe(s));
+
+/* ============ ENCADRÉS PERSONNALISABLES ============ */
+function injectCalloutControls(co){
+  if(co.querySelector('.co-ctrl'))return;
+  const ctrl=document.createElement('div');ctrl.className='co-ctrl';ctrl.setAttribute('contenteditable','false');
+  const ed=document.createElement('button');ed.type='button';ed.textContent='✎';ed.title='Modifier';
+  const del=document.createElement('button');del.type='button';del.textContent='🗑';del.title='Supprimer';
+  ed.onclick=ev=>{ev.stopPropagation();toggleEditCallout(co);};
+  del.onclick=ev=>{ev.stopPropagation();deleteCallout(co);};
+  ctrl.appendChild(ed);ctrl.appendChild(del);co.appendChild(ctrl);
+}
+function calloutParts(co){return [...co.children].filter(c=>!c.classList.contains('co-ctrl'));}
+function toggleEditCallout(co){
+  const editing=co.classList.toggle('editing');
+  const parts=calloutParts(co);
+  const edBtn=co.querySelector('.co-ctrl button');
+  parts.forEach(p=>{if(editing)p.setAttribute('contenteditable','true');else p.removeAttribute('contenteditable');});
+  if(editing){if(edBtn)edBtn.textContent='✓';(parts[0]||co).focus();}
+  else{if(edBtn)edBtn.textContent='✎';saveCallout(co);}
+}
+function saveCallout(co){
+  const cid=co.dataset.cid;
+  const html=calloutParts(co).map(p=>p.outerHTML).join('');
+  if(cid&&cid[0]==='n'){const it=DB.calloutsAdded.find(x=>x.id===cid);if(it){it.html=html;persist();}}
+  else{DB.calloutEdits=DB.calloutEdits||{};DB.calloutEdits[cid]=html;persist();}
+}
+function deleteCallout(co){
+  if(!confirm('Supprimer cet encadré ?'))return;
+  const cid=co.dataset.cid;
+  if(cid&&cid[0]==='n')DB.calloutsAdded=DB.calloutsAdded.filter(x=>x.id!==cid);
+  else{DB.calloutDeleted=DB.calloutDeleted||[];if(!DB.calloutDeleted.includes(cid))DB.calloutDeleted.push(cid);}
+  persist();co.remove();
+}
+function renderAddedCallout(item){
+  const sec=document.getElementById(item.section);if(!sec)return null;
+  const co=document.createElement('div');co.className=item.cls;co.dataset.cid=item.id;co.innerHTML=item.html;
+  injectCalloutControls(co);
+  const bar=sec.querySelector('.addco');sec.insertBefore(co,bar);
+  return co;
+}
+function addCallout(sectionId,type){
+  const id='n'+Date.now()+Math.floor(Math.random()*999);
+  const tag=type==='warn'?'Piège':type==='mnemo'?'Moyen mnémo':'À retenir';
+  const cls=type==='warn'?'callout warn':type==='mnemo'?'callout mnemo':'callout';
+  const html='<span class="tag">'+tag+'</span><p>Ton texte…</p>';
+  DB.calloutsAdded=DB.calloutsAdded||[];DB.calloutsAdded.push({id,section:sectionId,cls,html});persist();
+  const co=renderAddedCallout({id,section:sectionId,cls,html});
+  if(co){if(!body.classList.contains('editmode'))toggleEdit();toggleEditCallout(co);co.scrollIntoView({behavior:'smooth',block:'center'});}
+}
+function addSectionToolbar(sec){
+  if(sec.querySelector('.addco'))return;
+  const bar=document.createElement('div');bar.className='addco';
+  [['+ À retenir','plain'],['+ Piège','warn'],['+ Mnémo','mnemo']].forEach(([label,type])=>{
+    const b=document.createElement('button');b.type='button';b.textContent=label;b.onclick=()=>addCallout(sec.id,type);bar.appendChild(b);
+  });
+  sec.appendChild(bar);
+}
+function buildCallouts(){
+  [...fiche.querySelectorAll('.callout')].forEach((co,i)=>co.dataset.cid=String(i));
+  (DB.calloutDeleted||[]).forEach(cid=>{const co=fiche.querySelector('.callout[data-cid="'+cid+'"]');if(co)co.remove();});
+  if(DB.calloutEdits)Object.keys(DB.calloutEdits).forEach(cid=>{const co=fiche.querySelector('.callout[data-cid="'+cid+'"]');if(co)co.innerHTML=DB.calloutEdits[cid];});
+  fiche.querySelectorAll('.callout').forEach(injectCalloutControls);
+  fiche.querySelectorAll('section').forEach(addSectionToolbar);
+  (DB.calloutsAdded||[]).forEach(renderAddedCallout);
+}
+
+/* ============ NOTES LIBRES ============ */
+const notesArea=document.getElementById('notesArea');
+notesArea.value=DB.notes||'';
+let nT;notesArea.addEventListener('input',()=>{clearTimeout(nT);nT=setTimeout(()=>{DB.notes=notesArea.value;persist();},400);});
+
+/* ============ INIT ============ */
+if(!DB._seeded){if(!DB.cards.length)DB.cards=DEFAULT_CARDS.map(c=>({...c}));DB._seeded=true;persist();}
+indexStarrables();restoreStars();buildCallouts();restoreTrous();renderCard();renderCarnet();
+</script>
+</body>
+</html>
