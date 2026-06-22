@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232a2a28' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 3v6a4 4 0 008 0V3'/%3E%3Cpath d='M9 17a5 5 0 005-5'/%3E%3Ccircle cx='19' cy='6' r='2'/%3E%3Ccircle cx='9' cy='20' r='2'/%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Everyday Checklist · EDN 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f2efe9;
+  --text: #1C1714;
+  --muted: #8A7E77;
+  --accent: #a85a3d;
+  --divider: #E3D9D2;
+  --morn: #ffffff;
+  --sess: #faf7f2;
+  --eve: #ffffff;
+  --brk: #fdfbf8;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  max-width: none;
+  width: 100%;
+  margin: 0;
+  padding: 3rem 5vw;
+}
+
+/* HEADER */
+/* HEADER LAYOUT */
+.ec-header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 16px;
+}
+.ec-left { display: flex; flex-direction: column; align-items: flex-start; }
+.ec-back {
+  font-size: 10px;
+  color: var(--muted);
+  text-decoration: none;
+  display: block;
+  margin-bottom: 10px;
+  letter-spacing: .05em;
+}
+.ec-center { text-align: center; }
+.ec-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+
+.kicker {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.6rem;
+  text-align: center;
+}
+h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 36px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1;
+}
+
+.ec-separator {
+  height: 0.5px;
+  background: var(--divider);
+  margin: 2rem 0 2.5rem;
+}
+
+/* RESET BUTTON */
+.ec-back-right { text-align: right; }
+
+/* MINI CLOCK AS LINK (Habit Tracker) */
+.mini-clock-link {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: box-shadow .15s;
+}
+.mini-clock-link:hover { box-shadow: 0 2px 8px rgba(0,0,0,.08), 0 0 0 1px rgba(0,0,0,.04); }
+.mini-clock-label {
+  font-family: 'Playfair Display', serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  line-height: 1;
+}
+
+/* SECTION LABEL */
+.label {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.6rem;
+  margin-top: 2.8rem;
+}
+.rule {
+  height: 0.5px;
+  background: var(--divider);
+  margin-bottom: 1rem;
+}
+
+/* PROGRESS BAR (planning journalier) */
+.sched-progress {
+  height: 2px;
+  background: var(--divider);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  margin-top: 0.6rem;
+}
+.sched-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width .3s ease;
+}
+
+/* CARD BLOCK (fond blanc, façon index) */
+.card-block {
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.05), 0 0 0 1px rgba(0,0,0,.04);
+  padding: 6px 8px;
+  overflow: hidden;
+}
+
+/* MINI HORLOGE (discrète) */
+.mini-clock {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.04), 0 0 0 1px rgba(0,0,0,.03);
+  padding: 7px 14px;
+  text-align: left;
+  display: inline-block;
+}
+.mini-clock-time {
+  font-family: 'Playfair Display', serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--muted);
+  line-height: 1;
+}
+.mini-clock-date {
+  font-size: 8px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  margin-top: 3px;
+  opacity: .75;
+}
+
+/* SCHEDULE */
+table.sched {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 0.5rem;
+}
+table.sched tr { border-bottom: 0.5px solid var(--divider); }
+table.sched tr:last-child { border-bottom: none; }
+table.sched td { padding: 9px 12px; vertical-align: middle; }
+.t-time {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--accent);
+  white-space: nowrap;
+  width: 115px;
+  padding-left: 0;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+.t-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 14px;
+  font-weight: 500;
+  width: 210px;
+  color: var(--text);
+}
+.t-detail {
+  font-size: 11.5px;
+  color: var(--muted);
+  font-weight: 300;
+  cursor: text;
+  border-radius: 4px;
+  padding: 2px 4px;
+  margin: -2px -4px;
+  transition: background .15s;
+  outline: none;
+}
+.t-detail:hover { background: rgba(0,0,0,.025); }
+.t-detail:focus { background: rgba(0,0,0,.04); }
+.t-detail:empty::before {
+  content: 'Ajouter une note…';
+  color: var(--divider);
+  font-style: italic;
+}
+.r-morn  { background: var(--morn); }
+.r-sess  { background: var(--sess); }
+.r-brk   { background: var(--brk); }
+.r-eve   { background: var(--eve); }
+
+/* CHECKLISTS */
+.checks {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+.box {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.05), 0 0 0 1px rgba(0,0,0,.04);
+  overflow: hidden;
+}
+.box-head {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 11px 16px;
+  border-bottom: 0.5px solid var(--divider);
+}
+.box.morn .box-head { background: #f7f4f0; }
+.box.eve  .box-head { background: #f7f4f0; }
+.box-body { padding: 10px 16px 14px; }
+.ci {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 4.5px 0;
+  font-size: 12.5px;
+  color: var(--text);
+  line-height: 1.4;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.15s;
+}
+.ci::before {
+  content: '';
+  flex-shrink: 0;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  border: 0.5px solid var(--divider);
+  margin-top: 2px;
+  transition: background 0.15s, border-color 0.15s;
+}
+.ci.done { color: var(--muted); }
+.ci.done::before {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.ci.done span { text-decoration: line-through; text-decoration-color: var(--muted); }
+
+/* SCHED CHECKBOX */
+.t-check {
+  width: 28px;
+  padding-left: 0;
+  padding-right: 4px;
+}
+.scheck {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  border: 0.5px solid var(--divider);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+}
+table.sched tr.done .scheck {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+table.sched tr.done .t-name,
+table.sched tr.done .t-detail {
+  color: var(--muted);
+  text-decoration: line-through;
+  text-decoration-color: var(--muted);
+}
+
+/* CULTURAL ROTATION */
+table.rot {
+  width: 100%;
+  border-collapse: collapse;
+}
+table.rot tr { border-bottom: 0.5px solid var(--divider); }
+table.rot tr:last-child { border-bottom: none; }
+table.rot td { padding: 11px 12px; vertical-align: middle; }
+.r-day {
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  width: 45px;
+  padding-left: 0;
+  white-space: nowrap;
+}
+.r-cat {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 500;
+  width: 175px;
+  color: var(--text);
+}
+.r-det {
+  font-size: 11.5px;
+  color: var(--muted);
+  font-weight: 300;
+}
+
+/* PAGE 2 */
+.p2 { margin-top: 4rem; }
+
+/* PRINT */
+@media print {
+  @page { size: A4; margin: 1.8cm 2cm; }
+  @page :first { margin-top: 1.5cm; }
+
+  body {
+    padding: 0;
+    font-size: 11px;
+    background: white;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  h1 { font-size: 32px; margin-bottom: 1.2rem; padding-bottom: 1rem; }
+  .kicker { font-size: 9px; }
+
+  .label { font-size: 8px; margin-top: 1.4rem; }
+  .rule { margin-bottom: 0.6rem; }
+
+  table.sched td { padding: 6px 10px; }
+  .t-name { font-size: 14px; }
+  .t-detail { font-size: 10px; }
+  .t-time { font-size: 9.5px; width: 95px; }
+
+  table.sched tr { break-inside: avoid; }
+
+  .checks { gap: 1rem; margin-bottom: 0; }
+  .box-head { padding: 8px 14px; font-size: 8px; }
+  .box-body { padding: 8px 14px 10px; }
+  .ci { font-size: 11px; padding: 3px 0; }
+  .ci::before { width: 11px; height: 11px; min-width: 11px; }
+
+  .p2 {
+    break-before: page;
+    page-break-before: always;
+    margin-top: 0;
+  }
+
+  table.rot td { padding: 9px 10px; }
+  .r-cat { font-size: 15px; }
+  .r-det { font-size: 10px; }
+  table.rot tr { break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+
+<div class="ec-header">
+  <div class="ec-left">
+    <a href="index.html" class="ec-back">‹ Tableau de bord</a>
+    <div class="mini-clock">
+      <div class="mini-clock-time" id="miniClockTime"></div>
+      <div class="mini-clock-date" id="miniClockDate"></div>
+    </div>
+  </div>
+  <div class="ec-center">
+    <p class="kicker">Lyna's perfect day</p>
+    <h1>Everyday Checklist</h1>
+  </div>
+  <div class="ec-right">
+    <a href="#" onclick="resetChecklist();return false;" class="ec-back ec-back-right">Réinitialiser ↺</a>
+    <a href="habit_tracker_lyna.html" class="mini-clock mini-clock-link">
+      <div class="mini-clock-label">Habit Tracker</div>
+    </a>
+  </div>
+</div>
+<div class="ec-separator"></div>
+
+<p class="label">Planning journalier</p>
+<div class="sched-progress">
+  <div class="sched-progress-fill" id="schedProgressFill"></div>
+</div>
+
+<div class="card-block">
+<table class="sched">
+  <tr class="r-morn" data-skey="s1">
+    <td class="t-check"><div class="scheck"></div></td>
+    <td class="t-time">10h00 – 11h00</td>
+    <td class="t-name">Morning routine</td>
+    <td class="t-detail" contenteditable="true" spellcheck="false">douche · skin care · méditation · étirements · petit-déjeuner</td>
+  </tr>
+  <tr class="r-sess" data-skey="s2">
+    <td class="t-check"><div class="scheck"></div></td>
+    <td class="t-time">11h00 – 13h00</td>
+    <td class="t-name">Session 1</td>
+    <td class="t-detail" contenteditable="true" spellcheck="false">2h de révisions</td>
+  </tr>
+  <tr class="r-brk" data-skey="s3">
+    <td class="t-check"><div class="scheck"></div></td>
+    <td class="t-time">13h00 – 14h00</td>
+    <td class="t-name">Déjeuner</td>
+    <td class="t-detail" contenteditable="true" spellcheck="false"></td>
+  </tr>
+  <tr class="r-sess" data-skey="s4">
+    <td class="t-check"><div class="scheck"></div></td>
+    <td class="t-time">14h00 – 20h00</td>
+    <td class="t-name">Session 2</td>
+    <td class="t-detail" contenteditable="true" spellcheck="false">6h de révisions</td>
+  </tr>
+  <tr class="r-brk" data-skey="s5">
+    <td class="t-check"><div class="scheck"></div></td>
+    <td class="t-time">20h00 – 21h00</td>
+    <td class="t-name">Dîner</td>
+    <td class="t-detail" contenteditable="true" spellcheck="false"></td>
+  </tr>
+  <tr class="r-sess" data-skey="s6">
+    <td class="t-check"><div class="scheck"></div></td>
+    <td class="t-time">21h00 – 00h00</td>
+    <td class="t-name">Session 3</td>
+    <td class="t-detail" contenteditable="true" spellcheck="false">3h de révisions</td>
+  </tr>
+  <tr class="r-eve" data-skey="s7">
+    <td class="t-check"><div class="scheck"></div></td>
+    <td class="t-time">00h00 – 01h00</td>
+    <td class="t-name">Night routine</td>
+    <td class="t-detail" contenteditable="true" spellcheck="false">bilan du soir · skin care · cohérence cardiaque · lecture</td>
+  </tr>
+</table>
+</div>
+
+<p class="label">Routines</p>
+<div class="rule"></div>
+
+<div class="checks">
+  <div class="box morn">
+    <div class="box-head">Morning routine</div>
+    <div class="box-body">
+      <div class="ci" data-ckey="m1"><span>Douche & skin care</span></div>
+      <div class="ci" data-ckey="m2"><span>Méditation (10–15 min)</span></div>
+      <div class="ci" data-ckey="m3"><span>Étirements légers (5 min)</span></div>
+      <div class="ci" data-ckey="m4"><span>Petit-déjeuner</span></div>
+      <div class="ci" data-ckey="m6"><span>No social media</span></div>
+      <div class="ci" data-ckey="m5"><span>Briefing du matin</span></div>
+    </div>
+  </div>
+  <div class="box eve">
+    <div class="box-head">Night routine</div>
+    <div class="box-body">
+      <div class="ci" data-ckey="n0"><span>Bilan du soir</span></div>
+      <div class="ci" data-ckey="n6"><span>To do list</span></div>
+      <div class="ci" data-ckey="n1"><span>Journaling</span></div>
+      <div class="ci" data-ckey="n2"><span>Skin care</span></div>
+      <div class="ci" data-ckey="n3"><span>Cohérence cardiaque (5 min)</span></div>
+      <div class="ci" data-ckey="n4"><span>Lecture (30 min)</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="p2">
+  <p class="label">Pause culturelle</p>
+  <div class="rule"></div>
+  <div class="card-block">
+  <table class="rot">
+    <tr>
+      <td class="r-day">Lun</td>
+      <td class="r-cat">Musique</td>
+      <td class="r-det">Rap français classique (2000–2010) · underground · Rap US</td>
+    </tr>
+    <tr>
+      <td class="r-day">Mar</td>
+      <td class="r-cat">Cinéma</td>
+      <td class="r-det">Réalisateurs · films incontournables · Letterboxd</td>
+    </tr>
+    <tr>
+      <td class="r-day">Mer</td>
+      <td class="r-cat">Actualité</td>
+      <td class="r-det">Politique française · Géopolitique (semaines alternées)</td>
+    </tr>
+    <tr>
+      <td class="r-day">Jeu</td>
+      <td class="r-cat">Littérature</td>
+      <td class="r-det">Zweig · Hosseini · Jack London · classiques humanistes</td>
+    </tr>
+    <tr>
+      <td class="r-day">Ven</td>
+      <td class="r-cat">Art & Mode</td>
+      <td class="r-det">Peinture · Mode & créateurs · Photographie · Architecture</td>
+    </tr>
+    <tr>
+      <td class="r-day">Sam</td>
+      <td class="r-cat">Histoire</td>
+      <td class="r-det">Algérie & identité kabyle · Moyen-Orient (semaines alternées)</td>
+    </tr>
+    <tr>
+      <td class="r-day">Dim</td>
+      <td class="r-cat">Sport</td>
+      <td class="r-det">Foot · volley · F1 · joueurs · tactiques · actualité</td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<script>
+const joursFR = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+const moisFR = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+
+function updateMiniClock(){
+  const now = new Date();
+  const hh = String(now.getHours()).padStart(2,'0');
+  const mm = String(now.getMinutes()).padStart(2,'0');
+  document.getElementById('miniClockTime').textContent = hh + ':' + mm;
+  const moisAbbr = moisFR[now.getMonth()].slice(0,3) === 'jui' ? (now.getMonth()===5?'juin':'juil.') : moisFR[now.getMonth()].slice(0,3);
+  document.getElementById('miniClockDate').textContent = joursFR[now.getDay()].slice(0,3) + ' ' + now.getDate() + ' ' + moisAbbr;
+}
+updateMiniClock();
+setInterval(updateMiniClock, 1000);
+
+const PLAN_KEY = 'lyna_planning';
+const today = new Date().toISOString().slice(0, 10);
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(PLAN_KEY);
+    if (!raw) return {};
+    const data = JSON.parse(raw);
+    if (data.date !== today) return {}; // reset chaque jour
+    return data.checks || {};
+  } catch(e) { return {}; }
+}
+
+function saveState(checks) {
+  localStorage.setItem(PLAN_KEY, JSON.stringify({ date: today, checks }));
+}
+
+function resetChecklist(){
+  localStorage.removeItem(PLAN_KEY);
+  location.reload();
+}
+
+const state = loadState();
+
+// --- Checklist routines ---
+document.querySelectorAll('.ci[data-ckey]').forEach(el => {
+  const key = el.dataset.ckey;
+  if (state[key]) el.classList.add('done');
+  el.addEventListener('click', () => {
+    el.classList.toggle('done');
+    state[key] = el.classList.contains('done');
+    saveState(state);
+  });
+});
+
+// --- Planning rows ---
+const schedRows = document.querySelectorAll('tr[data-skey]');
+function updateSchedProgress(){
+  const total = schedRows.length;
+  const done = Array.from(schedRows).filter(r => r.classList.contains('done')).length;
+  const pct = total ? Math.round((done / total) * 100) : 0;
+  const fill = document.getElementById('schedProgressFill');
+  if (fill) fill.style.width = pct + '%';
+}
+schedRows.forEach(row => {
+  const key = row.dataset.skey;
+  if (state[key]) row.classList.add('done');
+  const dot = row.querySelector('.scheck');
+  if (dot) {
+    dot.addEventListener('click', (e) => {
+      e.stopPropagation();
+      row.classList.toggle('done');
+      state[key] = row.classList.contains('done');
+      saveState(state);
+      updateSchedProgress();
+    });
+  }
+  // Description éditable
+  const detail = row.querySelector('.t-detail');
+  if (detail) {
+    const noteKey = 'note_' + key;
+    const savedNote = state[noteKey];
+    if (savedNote != null) detail.textContent = savedNote;
+    detail.addEventListener('click', (e) => e.stopPropagation());
+    detail.addEventListener('blur', () => {
+      state[noteKey] = detail.textContent.trim();
+      saveState(state);
+    });
+    detail.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); detail.blur(); }
+    });
+  }
+});
+updateSchedProgress();
+</script>
+</body>
+</html>

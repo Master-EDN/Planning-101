@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232a2a28' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 3v6a4 4 0 008 0V3'/%3E%3Cpath d='M9 17a5 5 0 005-5'/%3E%3Ccircle cx='19' cy='6' r='2'/%3E%3Ccircle cx='9' cy='20' r='2'/%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Annales · EDN 2026</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;500;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#f2efe9;color:#1a1a1a;font-size:13px}
+
+.header{background:transparent;color:#3a3a3a;padding:18px 24px 12px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.hbtn{padding:4px 10px;border-radius:7px;border:1.5px solid #c8e0cc;background:white;color:#3d6b4a;font-size:9px;font-weight:600;cursor:pointer;transition:.15s;white-space:nowrap}
+.hbtn:hover{background:#3d6b4a;border-color:#3d6b4a;color:white}
+.header-back{font-size:10px;color:#a8a8a4;text-decoration:none;display:block;margin-bottom:5px;transition:.15s}
+.header-back:hover{color:#3d6b4a}
+.header h1{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;line-height:1;color:#3d6b4a}
+.header p{font-size:10px;color:#a8a8a4;margin-top:3px}
+
+.stats-bar{background:white;padding:10px 24px;display:flex;gap:26px;border-bottom:1px solid #e8e4de;flex-wrap:wrap;align-items:center}
+.stat .val{font-size:18px;font-weight:700;color:#1f4a2f}
+.stat .lbl{font-size:9px;color:#999;text-transform:uppercase;letter-spacing:.5px;margin-top:1px}
+
+.content{padding:18px 24px 80px;max-width:1200px;margin:0 auto}
+.card{background:white;border-radius:14px;box-shadow:0 1px 4px rgba(0,0,0,.06);overflow:hidden}
+.card-header{padding:12px 18px;font-size:13px;font-weight:600;color:white;background:linear-gradient(90deg,#1f4a2f,#3d6b4a);display:flex;justify-content:space-between;align-items:center}
+.card-header span{font-size:10px;opacity:.7;font-weight:400}
+
+table{width:100%;border-collapse:collapse}
+thead tr{background:#f3f7f1}
+th{padding:8px 10px;text-align:left;font-weight:600;font-size:9px;text-transform:uppercase;letter-spacing:.6px;color:#3d6b4a}
+th.c{text-align:center}
+td{padding:8px 10px;border-bottom:1px solid #f0ece6;vertical-align:middle;font-size:11px}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#f7faf6}
+tr.done-row td{background:#f0f7ed!important}
+.type-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
+.dot-edn{background:#3d6b4a}.dot-ecn{background:#3a6a8a}.dot-blanc{background:#c4a04a}.dot-ratt{background:#c47a7a}
+.ck{width:15px;height:15px;accent-color:#3d6b4a;cursor:pointer;display:block;margin:auto}
+.note-inp{width:48px;padding:3px 5px;border:1px solid #e0dcd6;border-radius:6px;text-align:center;font-size:11px;font-family:inherit}
+.note-inp:focus{outline:none;border-color:#3d6b4a}
+.comment-inp{width:100%;padding:3px 6px;border:1px solid #e0dcd6;border-radius:6px;font-size:10px;font-family:inherit}
+.comment-inp:focus{outline:none;border-color:#3d6b4a}
+.note-edn{font-weight:700;color:#3d6b4a}
+.titre-cell{font-weight:500}
+.desc-cell{font-size:10px;color:#999}
+.group-row td{background:#eaf2e7!important;font-weight:700;color:#1f4a2f;font-size:10px;text-transform:uppercase;letter-spacing:.4px;padding:6px 10px}
+
+.save-bar{position:fixed;bottom:0;left:0;right:0;background:white;border-top:1px solid #e8e4de;padding:8px 24px;display:flex;align-items:center;gap:8px;z-index:100;box-shadow:0 -2px 8px rgba(0,0,0,.06)}
+.save-bar span{font-size:10px;color:#aaa;flex:1}
+.btn{border:none;border-radius:8px;padding:6px 13px;font-size:10px;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s}
+.btn-p{background:#3d6b4a;color:white}.btn-p:hover{background:#4d7b5a}
+.btn-s{background:#f0ece6;color:#666}.btn-s:hover{background:#e8e4de}
+.toast{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);background:#1f4a2f;color:white;padding:7px 16px;border-radius:18px;font-size:10px;opacity:0;transition:.3s;z-index:2000;pointer-events:none}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <a href="index.html" class="header-back">‹ Tableau de bord</a>
+    <h1>📝 Annales</h1>
+    <p>20 épreuves · Du plus récent au plus ancien</p>
+  </div>
+  <div style="margin-left:auto;display:flex;gap:6px">
+    <button class="hbtn" onclick="importData()">⬆ Importer</button>
+    <button class="hbtn" onclick="exportData('planning_annales')">⬇ Exporter</button>
+    <button class="hbtn" onclick="syncToSheets('planning_annales')">☁ Sync Sheets</button>
+  </div>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><div class="val" id="st-done">0/20</div><div class="lbl">Annales faites</div></div>
+  <div class="stat"><div class="val" id="st-pct">0%</div><div class="lbl">Progression</div></div>
+  <div class="stat"><div class="val" id="st-moy">—</div><div class="lbl">Moyenne notes</div></div>
+</div>
+
+<div class="content">
+  <div class="card">
+    <div class="card-header">
+      Annales ECN / EDN — Du plus récent au plus ancien
+      <span>🟢 EDN · 🔵 ECN · 🟡 Blanc · 🔴 Rattrapage</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th class="c" style="width:36px">#</th>
+          <th style="width:100px">Année</th>
+          <th>Titre</th>
+          <th>Description</th>
+          <th class="c" style="width:70px">Note EDN.fr</th>
+          <th class="c" style="width:70px">Utilisateurs</th>
+          <th class="c" style="width:50px">Fait</th>
+          <th class="c" style="width:70px">Ma note /20</th>
+          <th style="min-width:140px">Commentaire</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+const annales = [
+  // === EDN ÉPREUVES OFFICIELLES ===
+  {year:"Oct. 2025", titre:"Annales EDN Octobre 2025", desc:"Les épreuves des EDN d'octobre 2025 corrigées par Vincent, major", note:4.3, u:1930, type:"edn", groupe:"EDN — Épreuves officielles"},
+  {year:"Oct. 2024", titre:"Annales EDN Octobre 2024", desc:"Les annales de l'EDN d'octobre 2024 avec correction ultra détaillée", note:4.1, u:8236, type:"edn", groupe:"EDN — Épreuves officielles"},
+  {year:"2023", titre:"Annales EDN 2023", desc:"Les annales de l'EDN 2023 avec leur correction détaillée", note:4.2, u:12181, type:"edn", groupe:"EDN — Épreuves officielles"},
+  // === RATTRAPAGES EDN ===
+  {year:"Jan. 2025", titre:"Annales rattrapage janvier 2025", desc:"Les annales du rattrapage de rang A de janvier 2025", note:4.4, u:1398, type:"ratt", groupe:"EDN — Rattrapages"},
+  // === BLANCS EDN ===
+  {year:"EDNp 2025", titre:"EDNp 2025", desc:"Toutes les épreuves de l'EDN blanc 2025 avec correction ultra-détaillée", note:4.3, u:3148, type:"blanc", groupe:"EDN — Blancs"},
+  {year:"Juil. 2024", titre:"Annales EDN blanc 2024", desc:"Les EDN blancs de juillet 2024 avec correction ultra-détaillée", note:4.5, u:7138, type:"blanc", groupe:"EDN — Blancs"},
+  {year:"Sept. 2023", titre:"EDN Blanc septembre 2023", desc:"Toutes les épreuves de l'EDN blanc de septembre 2023 corrigées", note:4.6, u:7716, type:"blanc", groupe:"EDN — Blancs"},
+  // === ECNnf ÉPREUVES OFFICIELLES ===
+  {year:"Juin 2024", titre:"ECNnf juin 2024", desc:"Toutes les épreuves de juin 2024", note:4.6, u:9129, type:"ecnnf", groupe:"ECNnf — Épreuves officielles"},
+  {year:"ECNnf 2023", titre:"ECNnf 2023", desc:"L'intégralité des épreuves de l'ECNnf 2023 corrigée par 2 top 10 aux ECN", note:4.6, u:11562, type:"ecnnf", groupe:"ECNnf — Épreuves officielles"},
+  // === BLANCS ECNnf ===
+  {year:"Avr. 2023", titre:"ECNnf blancs avril 2023", desc:"Correction intégrale de la deuxième session des ECNnf blancs de 2023", note:4.6, u:8969, type:"blanc", groupe:"ECNnf — Blancs"},
+  {year:"Mars 2023", titre:"ECNnf blancs mars 2023", desc:"L'intégralité de la correction des ECNnf blancs de mars 2023", note:4.3, u:9864, type:"blanc", groupe:"ECNnf — Blancs"},
+  // === ECNi ÉPREUVES OFFICIELLES ===
+  {year:"2022", titre:"ECNi 2022 corrigé", desc:"L'intégralité des annales de l'ECNi 2022", note:4.4, u:11620, type:"ecn", groupe:"ECNi — Épreuves officielles"},
+  {year:"2021", titre:"ECNi 2021 corrigé", desc:"Correction détaillée de l'ensemble des annales de l'ECN 2021", note:4.2, u:12958, type:"ecn", groupe:"ECNi — Épreuves officielles"},
+  {year:"2020", titre:"ECNi 2020 corrigé", desc:"Correction de l'ECNi 2020", note:4.1, u:14954, type:"ecn", groupe:"ECNi — Épreuves officielles"},
+  {year:"2019", titre:"ECNi 2019 corrigé", desc:"Correction du Major aux ECNi 2019", note:3.7, u:16585, type:"ecn", groupe:"ECNi — Épreuves officielles"},
+  {year:"2018", titre:"ECNi 2018 corrigé", desc:"Correction intégrale des DP de l'ECN 2018", note:3.6, u:17517, type:"ecn", groupe:"ECNi — Épreuves officielles"},
+  {year:"2017", titre:"ECNi 2017 Corrigé", desc:"ECNi 2017 Corrigé", note:3.7, u:12303, type:"ecn", groupe:"ECNi — Épreuves officielles"},
+  {year:"2016", titre:"ECNi 2016 Corrigé", desc:"Mise en conditions !", note:3.6, u:13373, type:"ecn", groupe:"ECNi — Épreuves officielles"},
+  // === BLANCS ECNi ===
+  {year:"Mars 2018", titre:"ECNi Mars 2018 Corrigé", desc:"ECNi Blanc national de mars 2018 corrigé", note:4.1, u:4612, type:"blanc", groupe:"ECNi — Blancs"},
+  {year:"Mars 2017", titre:"ECNi Mars 2017 corrigé", desc:"ECNi Blanc national de Mars 2017", note:3.2, u:4082, type:"blanc", groupe:"ECNi — Blancs"},
+];
+
+function sv(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+function ld(k){try{return localStorage.getItem(k)}catch(e){return null}}
+function nc(n){return n>=4.5?"h":n>=3.5?"m":"l"}
+function medal(i){
+  if(i===0)return"🥇";if(i===1)return"🥈";if(i===2)return"🥉";
+  return"<span style='color:#bbb;font-size:11px'>"+(i+1)+"</span>";
+}
+
+const typeBadge={
+  edn:"<span class='badge edn'>EDN</span>",
+  ecn:"<span class='badge ecn'>ECN</span>",
+  ecnnf:"<span class='badge ecnnf'>ECNnf</span>",
+  blanc:"<span class='badge blanc'>BLANC</span>",
+  ratt:"<span class='badge ratt'>RATTRAPAGE</span>",
+};
+
+const tbody=document.getElementById("tbody");
+annales.forEach((a,i)=>{
+  const dk="ann_done_"+i, nk="ann_note_"+i, ck="ann_com_"+i;
+  const checked=ld(dk)==="1";
+  const savedNote=ld(nk)||"";
+  const savedCom=ld(ck)||"";
+
+  const tr=document.createElement("tr");
+  if(checked)tr.classList.add("done-row");
+  tr.innerHTML=
+    "<td style='text-align:center'>"+medal(i)+"</td>"+
+    "<td class='yr'>"+typeBadge[a.type]+"<br><span style='color:#333;font-size:11px;font-weight:600'>"+a.year+"</span></td>"+
+    "<td><div class='title-cell'>"+a.titre+"</div></td>"+
+    "<td><div class='desc-cell'>"+a.desc+"</div></td>"+
+    "<td style='text-align:center'><span class='note-star'>★</span> <span class='nv "+nc(a.note)+"'>"+a.note.toFixed(1)+"</span></td>"+
+    "<td class='users'>"+a.u.toLocaleString('fr-FR')+"</td>"+
+    "<td style='text-align:center'><input type='checkbox' "+(checked?"checked":"")+" data-k='"+dk+"'></td>"+
+    "<td style='text-align:center'><input type='number' min='0' max='20' step='0.5' value='"+savedNote+"' placeholder='—' data-k='"+nk+"' class='inp-n'></td>"+
+    "<td><textarea class='inp-c' placeholder='Commentaire...' data-k='"+ck+"'>"+savedCom+"</textarea></td>";
+  tbody.appendChild(tr);
+
+  tr.querySelector("input[type=checkbox]").addEventListener("change",function(){
+    sv(this.dataset.k,this.checked?"1":"0");
+    tr.classList.toggle("done-row",this.checked);
+    updateStats();
+  });
+  tr.querySelector(".inp-n").addEventListener("input",function(){
+    sv(this.dataset.k,this.value);
+    updateStats();
+  });
+  tr.querySelector(".inp-c").addEventListener("input",function(){
+    sv(this.dataset.k,this.value);
+    this.style.height="auto";
+    this.style.height=this.scrollHeight+"px";
+  });
+  if(savedCom){const t=tr.querySelector(".inp-c");t.style.height="auto";t.style.height=t.scrollHeight+"px";}
+});
+
+function updateStats(){
+  let done=0, notes=[], total=annales.length;
+  annales.forEach((_,i)=>{
+    if(ld("ann_done_"+i)==="1") done++;
+    const n=ld("ann_note_"+i);
+    if(n&&n!=="") notes.push(parseFloat(n));
+  });
+  document.getElementById("st-done").textContent=done+"/"+total;
+  document.getElementById("st-pct").textContent=Math.round(done/total*100)+"%";
+  document.getElementById("st-moy").textContent=notes.length?(notes.reduce((a,b)=>a+b,0)/notes.length).toFixed(1)+"/20":"—";
+}
+updateStats();
+</script>
+
+<div class="content" style="padding-top:0">
+  <div class="card" style="margin-top:0">
+    <div class="card-header">
+      <span>📄 Planning LCA — Annales officielles &amp; blanches (LCA One)</span>
+      <span>Fait ✓ · Note /20 · Type · Difficulté · Support correction · Date · Commentaire</span>
+    </div>
+
+    <!-- Stats LCA -->
+    <div class="stats-bar" style="border-radius:0">
+      <div class="stat"><div class="val" id="lca-done">0/32</div><div class="lbl">Articles faits</div></div>
+      <div class="stat"><div class="val" id="lca-pct">0%</div><div class="lbl">Progression</div></div>
+      <div class="stat"><div class="val" id="lca-moy">—</div><div class="lbl">Moyenne /20</div></div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th class="c" style="width:36px">#</th>
+          <th>Session / Article</th>
+          <th class="c" style="width:80px">Type étude</th>
+          <th class="c" style="width:70px">Difficulté</th>
+          <th class="c" style="width:90px">Support correction</th>
+          <th class="c" style="width:54px">Fait</th>
+          <th class="c" style="width:72px">Note /20</th>
+          <th class="c" style="width:90px">Date faite</th>
+          <th style="min-width:130px">Commentaire</th>
+        </tr>
+      </thead>
+      <tbody id="lca-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+const lcaData = [
+  // === ANNALES OFFICIELLES ===
+  {groupe:"📋 Annales officielles", session:"EDN 2025", art:"Article 1", corrVideo:true, corrTexte:false},
+  {groupe:"📋 Annales officielles", session:"EDN 2025", art:"Article 2", corrVideo:true, corrTexte:false},
+  {groupe:"📋 Annales officielles", session:"EDN oct. 2024", art:"Article 1", corrVideo:true, corrTexte:false},
+  {groupe:"📋 Annales officielles", session:"EDN oct. 2024", art:"Article 2", corrVideo:true, corrTexte:false},
+  {groupe:"📋 Annales officielles", session:"ECN juin 2024", art:"Article 1", corrVideo:true, corrTexte:true},
+  {groupe:"📋 Annales officielles", session:"ECN juin 2024", art:"Article 2", corrVideo:true, corrTexte:true},
+  {groupe:"📋 Annales officielles", session:"EDN oct. 2023", art:"Article 1", corrVideo:true, corrTexte:true},
+  {groupe:"📋 Annales officielles", session:"EDN oct. 2023", art:"Article 2", corrVideo:true, corrTexte:true},
+  {groupe:"📋 Annales officielles", session:"ECN juin 2023", art:"Article 1", corrVideo:true, corrTexte:true},
+  {groupe:"📋 Annales officielles", session:"ECN juin 2023", art:"Article 2", corrVideo:true, corrTexte:true},
+  {groupe:"📋 Annales officielles", session:"ECN 2022", art:"Article 1", corrVideo:true, corrTexte:true},
+  {groupe:"📋 Annales officielles", session:"ECN 2022", art:"Article 2", corrVideo:true, corrTexte:true},
+  {groupe:"📋 Annales officielles", session:"ECN 2021", art:"Article 1", corrVideo:true, corrTexte:false},
+  {groupe:"📋 Annales officielles", session:"ECN 2021", art:"Article 2", corrVideo:true, corrTexte:false},
+  {groupe:"📋 Annales officielles", session:"ECN 2020", art:"Article 1", corrVideo:true, corrTexte:false},
+  {groupe:"📋 Annales officielles", session:"ECN 2020", art:"Article 2", corrVideo:true, corrTexte:false},
+  {groupe:"📋 Annales officielles", session:"ECN 2019", art:"Article 1", corrVideo:false, corrTexte:false},
+  {groupe:"📋 Annales officielles", session:"ECN 2019", art:"Article 2", corrVideo:false, corrTexte:false},
+  {groupe:"📋 Annales officielles", session:"ECN 2018", art:"Article 1", corrVideo:false, corrTexte:false},
+  {groupe:"📋 Annales officielles", session:"ECN 2018", art:"Article 2", corrVideo:false, corrTexte:false},
+  {groupe:"📋 Annales officielles", session:"ECN 2017", art:"Article 1", corrVideo:false, corrTexte:false},
+  {groupe:"📋 Annales officielles", session:"ECN 2017", art:"Article 2", corrVideo:false, corrTexte:false},
+  // === ANNALES BLANCHES ===
+  {groupe:"🟡 Annales blanches", session:"Blanc EDN 2025", art:"Article 1", corrVideo:true, corrTexte:true},
+  {groupe:"🟡 Annales blanches", session:"Blanc EDN 2025", art:"Article 2", corrVideo:true, corrTexte:true},
+  {groupe:"🟡 Annales blanches", session:"Blanc EDN 2024", art:"Article 1", corrVideo:true, corrTexte:false},
+  {groupe:"🟡 Annales blanches", session:"Blanc EDN 2024", art:"Article 2", corrVideo:true, corrTexte:false},
+  {groupe:"🟡 Annales blanches", session:"Blanc EDN 2023", art:"Article 1", corrVideo:false, corrTexte:true},
+  {groupe:"🟡 Annales blanches", session:"Blanc EDN 2023", art:"Article 2", corrVideo:false, corrTexte:true},
+  {groupe:"🟡 Annales blanches", session:"Blanc ECN 2022", art:"Article 1", corrVideo:false, corrTexte:true},
+  {groupe:"🟡 Annales blanches", session:"Blanc ECN 2022", art:"Article 2", corrVideo:false, corrTexte:true},
+  {groupe:"🟡 Annales blanches", session:"Blanc ECN 2021", art:"Article 1", corrVideo:false, corrTexte:false},
+  {groupe:"🟡 Annales blanches", session:"Blanc ECN 2021", art:"Article 2", corrVideo:false, corrTexte:false},
+  {groupe:"🟡 Annales blanches", session:"Blanc ECN 2020", art:"Article 1", corrVideo:false, corrTexte:false},
+  {groupe:"🟡 Annales blanches", session:"Blanc ECN 2020", art:"Article 2", corrVideo:false, corrTexte:false},
+  {groupe:"🟡 Annales blanches", session:"Blanc ECN 2019", art:"Article 1", corrVideo:false, corrTexte:false},
+  {groupe:"🟡 Annales blanches", session:"Blanc ECN 2019", art:"Article 2", corrVideo:false, corrTexte:false},
+  {groupe:"🟡 Annales blanches", session:"Blanc ECN 2018", art:"Article 1", corrVideo:false, corrTexte:false},
+  {groupe:"🟡 Annales blanches", session:"Blanc ECN 2018", art:"Article 2", corrVideo:false, corrTexte:false},
+  {groupe:"🟡 Annales blanches", session:"Blanc ECN 2017", art:"Article 1", corrVideo:false, corrTexte:false},
+  {groupe:"🟡 Annales blanches", session:"Blanc ECN 2017", art:"Article 2", corrVideo:false, corrTexte:false},
+];
+
+const lcaTbody = document.getElementById("lca-tbody");
+const DIFF = ["","⭐ Facile","⭐⭐ Moyen","⭐⭐⭐ Difficile"];
+const TYPES = ["","Essai randomisé","Cohorte","Cas-témoins","Transversale","Méta-analyse","Revue systématique","Autre"];
+
+let lastLcaGroupe = "";
+let lcaCount = 0;
+
+lcaData.forEach((item, i) => {
+  // Séparateur de groupe
+  if(item.groupe !== lastLcaGroupe){
+    lastLcaGroupe = item.groupe;
+    const sep = document.createElement("tr");
+    sep.className = "group-row";
+    const icon = item.groupe === "Annales officielles" ? "📋" : "🟡";
+    sep.innerHTML = "<td colspan='9'>" + icon + "  " + item.groupe + "</td>";
+    lcaTbody.appendChild(sep);
+  }
+
+  const dk="lca_done_"+i, nk="lca_note_"+i, ck="lca_com_"+i, dk2="lca_date_"+i, dk3="lca_diff_"+i, dk4="lca_type_"+i;
+  const checked=ld(dk)==="1";
+  const savedNote=ld(nk)||"";
+  const savedCom=ld(ck)||"";
+  const savedDate=ld(dk2)||"";
+  const savedDiff=ld(dk3)||"";
+  const savedType=ld(dk4)||"";
+
+  // Support correction
+  let corrHtml = "";
+  if(item.corrVideo) corrHtml += "<span style='font-size:10px'>▶️ Vidéo</span> ";
+  if(item.corrTexte) corrHtml += "<span style='font-size:10px'>📄 Texte</span>";
+
+  const tr = document.createElement("tr");
+  if(checked) tr.classList.add("done-row");
+  lcaCount++;
+
+  tr.innerHTML =
+    "<td style='text-align:center;color:#bbb;font-size:11px;font-weight:700'>"+(i+1)+"</td>"+
+    "<td><div class='titre-cell' style='font-size:12px'>"+item.session+"</div><div class='desc-cell'>"+item.art+"</div></td>"+
+    "<td style='text-align:center'><select style='font-size:10px;border:1px solid #e0dcd6;border-radius:6px;padding:3px 4px;width:100%;font-family:inherit' class='lca-type' data-k='"+dk4+"'>"+
+      TYPES.map((t,ti)=>"<option value='"+ti+"'"+(savedType==ti?" selected":"")+">"+(t||"—")+"</option>").join("")+
+    "</select></td>"+
+    "<td style='text-align:center'><select style='font-size:10px;border:1px solid #e0dcd6;border-radius:6px;padding:3px 4px;width:100%;font-family:inherit' class='lca-diff' data-k='"+dk3+"'>"+
+      DIFF.map((d,di)=>"<option value='"+di+"'"+(savedDiff==di?" selected":"")+">"+(d||"—")+"</option>").join("")+
+    "</select></td>"+
+    "<td style='text-align:center;font-size:10px'>"+corrHtml+"</td>"+
+    "<td style='text-align:center'><input type='checkbox' "+(checked?"checked":"")+" data-k='"+dk+"' class='lca-cb ck'></td>"+
+    "<td style='text-align:center'><input type='number' min='0' max='20' step='0.5' value='"+savedNote+"' placeholder='—' data-k='"+nk+"' class='lca-n note-inp'></td>"+
+    "<td style='text-align:center'><input type='date' value='"+savedDate+"' data-k='"+dk2+"' class='lca-date' style='font-size:10px;border:1px solid #e0dcd6;border-radius:6px;padding:3px 4px;width:100%;font-family:inherit'></td>"+
+    "<td><textarea class='lca-c comment-inp' placeholder='Commentaire...' data-k='"+ck+"' style='resize:none;min-height:28px'>"+savedCom+"</textarea></td>";
+
+  lcaTbody.appendChild(tr);
+
+  tr.querySelector(".lca-cb").addEventListener("change",function(){
+    sv(this.dataset.k,this.checked?"1":"0");
+    tr.classList.toggle("done-row",this.checked);
+    updateLcaStats();
+  });
+  tr.querySelector(".lca-n").addEventListener("input",function(){sv(this.dataset.k,this.value);updateLcaStats();});
+  tr.querySelector(".lca-c").addEventListener("input",function(){
+    sv(this.dataset.k,this.value);
+    this.style.height="auto";this.style.height=this.scrollHeight+"px";
+  });
+  tr.querySelector(".lca-date").addEventListener("change",function(){sv(this.dataset.k,this.value);});
+  tr.querySelector(".lca-type").addEventListener("change",function(){sv(this.dataset.k,this.value);});
+  tr.querySelector(".lca-diff").addEventListener("change",function(){sv(this.dataset.k,this.value);});
+
+  if(savedCom){const t=tr.querySelector(".lca-c");t.style.height="auto";t.style.height=t.scrollHeight+"px";}
+});
+
+// Update total count display
+document.getElementById("lca-done").textContent = "0/"+lcaData.length;
+
+function updateLcaStats(){
+  let done=0, notes=[];
+  lcaData.forEach((_,i)=>{
+    if(ld("lca_done_"+i)==="1") done++;
+    const n=ld("lca_note_"+i);
+    if(n&&n!=="") notes.push(parseFloat(n));
+  });
+  document.getElementById("lca-done").textContent=done+"/"+lcaData.length;
+  document.getElementById("lca-pct").textContent=Math.round(done/lcaData.length*100)+"%";
+  document.getElementById("lca-moy").textContent=notes.length?(notes.reduce((a,b)=>a+b,0)/notes.length).toFixed(1)+"/20":"—";
+}
+updateLcaStats();
+</script>
+<div style="height:24px"></div>
+
+<script>
+const GSHEET_URL = "https://script.google.com/macros/s/AKfycbwv3meUEQ690HbhavV0ZQBwoTI5xU7F0R6NzA9cYUM3oRVZQ-1MFi99VKCuZmskO_Pe/exec";
+
+async function syncToSheets(source) {
+  const data = {};
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    data[k]=localStorage.getItem(k);
+  }
+  showToast('☁️ Synchronisation en cours...');
+  try{
+    const resp = await fetch(GSHEET_URL, {
+      method:'POST',
+      body: JSON.stringify({source: source, payload: data}),
+    });
+    const result = await resp.json();
+    if(result.status==='ok') showToast('✅ Synchronisé avec Google Sheets !');
+    else showToast('❌ Erreur de synchronisation');
+  } catch(e) {
+    showToast('❌ Erreur réseau : ' + e.message);
+  }
+}
+
+async function restoreFromSheets(source) {
+  showToast('☁️ Récupération en cours...');
+  try{
+    const resp = await fetch(GSHEET_URL + '?source=' + encodeURIComponent(source));
+    const data = await resp.json();
+    if(Object.keys(data).length === 0){ showToast('⚠️ Aucune donnée trouvée'); return; }
+    Object.keys(data).forEach(k => localStorage.setItem(k, data[k]));
+    showToast('✅ Données restaurées ! Rechargement...');
+    setTimeout(()=>location.reload(), 1200);
+  } catch(e) {
+    showToast('❌ Erreur réseau : ' + e.message);
+  }
+}
+
+function exportData(filename){
+  const data={};
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    data[k]=localStorage.getItem(k);
+  }
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=filename+'_sauvegarde_'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();
+  showToast('✅ Données exportées !');
+}
+function importData(){
+  const input=document.createElement('input');
+  input.type='file';input.accept='.json';
+  input.onchange=function(e){
+    const file=e.target.files[0];
+    const reader=new FileReader();
+    reader.onload=function(ev){
+      try{
+        const data=JSON.parse(ev.target.result);
+        Object.keys(data).forEach(k=>localStorage.setItem(k,data[k]));
+        showToast('✅ Données importées ! Rechargement...');
+        setTimeout(()=>location.reload(),1200);
+      }catch(err){showToast('❌ Fichier invalide');}
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+function showToast(msg){
+  let t=document.getElementById('toast');
+  if(!t){t=document.createElement('div');t.id='toast';t.className='toast';document.body.appendChild(t);}
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+</script></body></html>
